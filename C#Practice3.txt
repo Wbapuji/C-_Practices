@@ -1,0 +1,118 @@
+1- Write a program to count how many numbers between 1 and 100 are divisible by 3 with no remainder. Display the count on the console.
+
+using System;
+
+public class HelloWorld
+{
+    public static void Main(string[] args)
+    {
+         int count=0;
+         for(var i=0;i<100;i++){
+             if(i%3==0){
+                 count++;
+             }
+         }
+         Console.WriteLine(count);
+    }
+}
+
+2- Write a program and continuously ask the user to enter a number or "ok" to exit. Calculate the sum of all the previously entered numbers and display it on the console.
+
+using System;
+
+public class HelloWorld
+{
+    public static void Main(string[] args)
+    {
+        int count=0;
+        while(true){
+            Console.WriteLine("Enter a number or ok to exit");
+            String s=Console.ReadLine();
+            if(s.ToLower()=="ok"){
+                break;
+            }
+            if(int.TryParse(s,out int n)){
+                count+=n;
+            }
+        }
+        Console.WriteLine(count);
+    }
+}
+
+3- Write a program and ask the user to enter a number. Compute the factorial of the number and print it on the console. For example, if the user enters 5, the program should calculate 5 x 4 x 3 x 2 x 1 and display it as 5! = 120.
+
+
+using System;
+
+public class HelloWorld
+{
+    public static void Main(string[] args)
+    {
+        int fact=1;
+        Console.WriteLine("Enter a number to find it's factorial");
+       // var num=Console.ReadLine();
+        if(int.TryParse(Console.ReadLine(),out int n)){
+            while(n!=0){
+                fact*=n;
+                n--;
+            }
+        }
+        Console.WriteLine(fact);
+    }
+}
+
+4- Write a program that picks a random number between 1 and 10. Give the user 4 chances to guess the number. If the user guesses the number, display “You won"; otherwise, display “You lost". (To make sure the program is behaving correctly, you can display the secret number on the console first.)
+
+using System;
+
+public class HelloWorld
+{
+    public static void Main(string[] args)
+    {
+        var random=new Random();
+        int rNum=random.Next(1,11);
+        Console.WriteLine(rNum);
+        int n=4;
+        bool got=false;
+        while(n>0){
+            if(int.TryParse(Console.ReadLine(),out int num)){
+                if(num==rNum){
+                    Console.WriteLine("You Won");
+                    got=true;
+                    break;
+                }
+            }
+            n--;
+        }
+        if(!got){
+            Console.WriteLine("You Lost");
+        }
+        }
+}
+
+5- Write a program and ask the user to enter a series of numbers separated by comma. Find the maximum of the numbers and display it on the console. For example, if the user enters “5, 3, 8, 1, 4", the program should display 8.
+
+
+using System;
+
+public class HelloWorld
+{
+    public static void Main(string[] args)
+    {
+        String allNums=Console.ReadLine();
+        int maxnum=int.MinValue;
+        if(String.IsNullOrWhiteSpace(allNums)){
+            Console.WriteLine("Enter the Numbers");
+            return;
+        }
+        String[] numArr=allNums.Split(",");
+       // List<int>list=new List<>();
+        foreach(var n in numArr){
+            if(int.TryParse(n.Trim(),out int num)){
+                maxnum=Math.Max(num,maxnum);
+            }
+        }
+           Console.WriteLine(maxnum); 
+        }
+}
+
