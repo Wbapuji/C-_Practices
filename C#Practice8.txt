@@ -1,0 +1,76 @@
+C# 
+ListPractice-
+
+using System;
+using System.Collections.Generic;
+
+public class Employee
+{
+    public int Id{get;set;}
+    public String Name{get;set;}
+    public bool IsAct{get;set;}
+    public String Role{get;set;}
+    
+    public Employee(int id,String name,bool isact,string role){
+        Id=id;
+        Name=name;
+        IsAct=isact;
+        Role=role;
+    }
+    public override String ToString(){
+        return $"{Id}, {Name}, {IsAct}, {Role}";
+    }
+}
+public class Program{
+    public static void Main(){
+        List<Employee> empList=new List<Employee>{
+            new Employee(12,"Gopal",true,"Manager"),
+            new Employee(13,"Raghu",true,"Dev"),
+            new Employee(14,"Sukur",false,"Tester"),
+            new Employee(15,"lisa",false,"QEA"),
+            new Employee(16,"derek",true,"Intern")
+        };
+        empList.ForEach(a=>Console.WriteLine(a));
+    }
+}
+
+Constructor Overloading using "this" keyword :-
+
+using System;
+
+public class Person
+{
+    public String name{get;set;}
+    public int id{get;set;}
+    public Person(){
+        name="null";
+        id=0;
+        Console.WriteLine("default called");
+    }
+    public Person(string name):this(){
+        this.name=name;
+        id=10;
+        Console.WriteLine("name parametered constructor");
+    }
+    public Person(string name,int id):this(name) {
+        this.name=name;
+        this.id=id;
+        Console.WriteLine("name,id parameter constructor ");
+    }
+}
+class Program{
+    public static void Main(string[] args)
+    {
+        Person p=new Person("gopal",101);
+        Console.WriteLine(p.id);
+        Console.WriteLine(p.name);
+    }
+}
+
+output:-
+
+default called
+name parametered constructor
+name,id parameter constructor 
+101
+gopal
