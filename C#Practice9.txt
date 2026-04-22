@@ -1,0 +1,103 @@
+
+// Online C# Editor for free
+// Write, Edit and Run your C# code using C# Online Compiler
+
+using System;
+using System.Collections.Generic;
+public class HelloWorld
+{
+    public static void Main(string[] args)
+    {
+        SortedList<int,string>slist=new SortedList<int,string>();
+            slist.Add(1,"alex");
+            slist.Add(2,"bala");
+            slist.Add(7,"gopal");
+            slist.Add(6,"frogs");
+            slist.Add(5,"echoes");
+            slist.Add(4,"dungri");
+            slist.Add(3,"chole");
+            
+            foreach(var kv in slist){
+                Console.WriteLine($"{kv.Key} -> {kv.Value}");
+            }
+            foreach(var k in slist.Keys){
+                Console.Write(k+" ");
+            }
+            Console.WriteLine();
+            foreach(var v in slist.Values){
+                Console.Write(v+" ");
+            }
+            Console.WriteLine();
+            Console.WriteLine(slist.Keys[0]+" "+slist.Values[0]);
+            slist.Remove(3);
+            foreach(var kv in slist){
+                Console.WriteLine($"{kv.Key} -> {kv.Value}");
+            }
+            Console.WriteLine();
+            slist.RemoveAt(3);
+            foreach(var kv in slist){
+                Console.WriteLine($"{kv.Key} -> {kv.Value}");
+            }
+            Console.WriteLine();
+            if(slist.ContainsKey(4)){
+                Console.WriteLine("exists");
+            }
+            
+            if(slist.TryGetValue(1,out string value)){
+                Console.WriteLine(value);
+            }
+            Console.WriteLine(slist.IndexOfKey(6));
+             Console.WriteLine(slist.IndexOfValue("gopal"));
+             IList<int>Akeys=slist.Keys;
+             foreach(var a in Akeys){
+                 Console.WriteLine(a);
+             }
+             IList<string>Avalues=slist.Values;
+             foreach(var s in Avalues){
+                 Console.WriteLine(s);
+             }
+    }
+}
+
+
+
+output:- 
+1 -> alex
+2 -> bala
+3 -> chole
+4 -> dungri
+5 -> echoes
+6 -> frogs
+7 -> gopal
+1 2 3 4 5 6 7 
+alex bala chole dungri echoes frogs gopal 
+1 alex
+1 -> alex
+2 -> bala
+4 -> dungri
+5 -> echoes
+6 -> frogs
+7 -> gopal
+
+1 -> alex
+2 -> bala
+4 -> dungri
+6 -> frogs
+7 -> gopal
+
+exists
+alex
+3
+4
+1
+2
+4
+6
+7
+alex
+bala
+dungri
+frogs
+gopal
+
+=== Code Execution Successful ===
