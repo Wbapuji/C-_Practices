@@ -1,0 +1,101 @@
+C#Practice10
+
+using System;
+using System.Collections.Generic;
+public class HelloWorld
+{
+    public static void Main(string[] args)
+    {
+        // HashSet<int>set=new HashSet<int>() {1,2,3};
+        // Console.WriteLine(String.Join(",",set));  // return 1,2,3
+        // List<int>list=new List<int>(){1,2,3,4,5};
+        // Console.WriteLine(String.Join(",",list));// return 1,2,3,4,5
+        // set.RemoveWhere(even);
+        // foreach(var a in set){
+        //     Console.Write(a+" ");
+        // }
+        SortedSet<int>set=new SortedSet<int>();
+        set.Add(3);
+        set.Add(43);
+        set.Add(23);
+        set.Add(14);
+        set.Add(2);
+        set.Add(4);
+        
+        foreach(var a in set){
+            Console.Write(a+" ");
+        }
+    }
+    public static bool even(int i){
+        return ((i%2)==0);
+    }
+}
+
+
+
+class Desc:IComparer<int>{
+    public int Compare(int x,int y) => y.CompareTo(x);
+
+    public static void Main(){
+        var set=new SortedSet<int>(new Desc()){
+            1,6,3,5,8,3,2
+        };
+        foreach(var a in set){
+            Console.WriteLine(a);
+    }
+}
+}
+
+output:-
+8
+6
+5
+3
+2
+1
+
+
+// Online C# Editor for free
+// Write, Edit and Run your C# code using C# Online Compiler
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+public class HelloWorld
+{
+    public static void Main(string[] args)
+    {
+        var list=new List<int>{1,2,4,3,2,5,5,3,7,6};
+        list.ForEach(a=>Console.Write(a+" "));
+        var sset=new SortedSet<int>(list);
+       
+        Console.WriteLine();
+        // sset.Clear();
+        // Console.WriteLine(sset.Count);
+        Console.WriteLine(sset.Max);
+        Console.WriteLine(sset.Min);
+        
+        var view=sset.GetViewBetween(3,7);
+        foreach(var a in view){
+            Console.Write(a+" ");
+        }
+    }
+    
+    
+    
+    public static bool even(int i){
+        return ((i%2)==0);
+    }
+}
+
+
+output:
+
+1 2 4 3 2 5 5 3 7 6 
+1 2 3 4 5 6 7 
+3
+total no of lements after removing 1 is 6
+
+7
+1
+4 5 6 7 
