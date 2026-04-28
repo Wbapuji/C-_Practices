@@ -1,0 +1,4 @@
+Rest Assured:-
+	representational state transfer API
+	interface that allows two applications 
+	  
