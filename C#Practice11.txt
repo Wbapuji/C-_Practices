@@ -1,0 +1,116 @@
+using System;
+using System.Collections;
+public class HelloWorld
+{
+    public static void Main(string[] args)
+    {
+        Hashtable ht=new Hashtable();
+        ht.Add(1,"Apple");
+        ht.Add("wbbd",true);
+        ht.Add(1.5,10);
+        foreach(DictionaryEntry a in ht){
+            Console.WriteLine(a.Key+" "+a.Value);
+        }
+        if(ht.ContainsKey(1.5)){
+            Console.WriteLine("present");
+        }
+        if(ht.ContainsValue(true)){
+            Console.WriteLine("true");
+        }
+        Console.WriteLine();
+        Hashtable h1=new Hashtable(){
+            {"drum",4},{30.90,null},{1,false}
+        };
+        foreach(var e in h1.Keys){
+            Console.WriteLine(e+" "+h1[e]);
+            Console.WriteLine(e.GetHashCode());
+        }
+        h1["drum"]="can";
+        foreach(var e in h1.Keys){
+            Console.WriteLine(e+" "+h1[e]);
+        }
+        string oldKey="drum";
+        string newKey="container";
+        if(h1.ContainsKey(oldKey)){
+            object value=h1[oldKey];
+            h1.Remove(oldKey);
+            h1[newKey]=value;
+        }
+        foreach(var e in h1.Keys){
+            Console.WriteLine(e+" "+h1[e]);
+        }
+        
+    }
+}
+
+output:-
+1.5 10
+wbbd True
+1 Apple
+present
+true
+
+30.9 
+643334144
+drum 4
+379839982
+1 False
+1
+30.9 
+drum can
+1 False
+30.9 
+container can
+1 False
+
+
+IEnumerable Application:-
+
+using System;
+using System.Collections;
+using System.Collections.Generic;
+public class HelloWorld
+{
+    public static void Main(string[] args)
+    {
+        Stack<object>s=new Stack<object>();
+        s.Push("alpa");
+        s.Push("beta");
+        s.Push("gamma");
+        s.Push("sigma");
+        PrintValues(s);
+        List<object>list=new List<object>{1,2,3,4,5,6};
+        PrintValues(list);
+        int[] arr=new int[]{10,20,30,40,50};
+        PrintValues(arr);
+        
+    }
+    public static void PrintValues(IEnumerable Collection){
+        foreach(object obj in Collection){
+            Console.WriteLine(obj);                                --works
+        }
+    }
+    public static void PrintValues<T>(IEnumerable<T> Collection){
+        foreach(T obj in Collection){
+            Console.WriteLine(obj);                                --works
+        }
+    }
+}
+
+output:-
+
+sigma
+gamma
+beta
+alpa
+1
+2
+3
+4
+5
+6
+10
+20
+30
+40
+50
