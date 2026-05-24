@@ -1,0 +1,131 @@
+// Online Java Compiler
+// Use this editor to write, compile and run your Java code online
+import java.io.*;
+import java.util.*;
+class Main {
+    public static void main(String[] args) {
+       String s="pwwkew";
+       int ans=longestSubS(s);
+       System.out.println(ans);
+       
+    }
+    public static int[] twoSum(int[] arr,int k){
+        Map<Integer,Integer>map=new HashMap<>();
+        int p;
+        for(int i=0;i<arr.length;i++){
+            p=k-arr[i];
+            if(map.containsKey(p)){
+                return new int[]{map.get(p),i};
+            }
+            map.put(arr[i],i);
+        }
+        return new int[]{-1,-1};
+    }
+    public static int stocksell(int[] arr){
+        //7,1,5,3,6,4
+        int lps=arr[0];
+        int mp=Integer.MIN_VALUE;
+        for(int i=1;i<arr.length;i++){
+            if(lps>arr[i]){
+                lps=arr[i];
+            }
+            mp=Math.max(mp,arr[i]-lps);
+        }
+        return mp;
+    }
+    public static boolean checkduplicate(int[] arr){
+        Set<Integer>set=new HashSet<>();
+        for(int i=0;i<arr.length;i++){
+            if(set.contains(arr[i])){
+                return true;
+            }
+            set.add(arr[i]);
+        }
+        return false;
+    }
+    public static boolean anaCheck(String s,String t){
+        if(s.length()!=t.length()){
+            return false;
+        }
+        int[] alpha=new int[26];
+        for(int i=0;i<s.length();i++){
+            alpha[s.charAt(i)-'a']++;
+            alpha[t.charAt(i)-'a']--;
+        }
+        for(int a:alpha){
+            if(a!=0){
+                return false;
+            }
+        }
+        return true;
+    }
+    public static int[] plusOne(int[] digits){
+        boolean allNines=true;
+        for(int i=digits.length-1;i>=0;i--){
+            if(digits[i]<9){
+                digits[i]++;
+                allNines=false;
+                break;
+            }
+            digits[i]=0;
+        }
+        int[] newDigits=new int[digits.length+1];
+        newDigits[0]=1;
+        if(allNines){
+            return newDigits;
+        }
+        else{
+            return digits;
+        }
+    }
+    public static void merge(int[] nums1,int m,int[] nums2,int n){
+        int i=m-1;
+        int j=n-1;
+        int k=m+n-1;
+        while(j>=0){
+            if(i>=0 && nums1[i]>nums2[j]){
+                nums1[k]=nums1[i];
+                i--;
+            }
+            else{
+                nums1[k]=nums2[j];
+                j--;
+            }
+            k--;
+        }
+    }
+    public static int maxSubarray(int[] arr){
+        int ms=Integer.MIN_VALUE;
+        int cs=0;
+        if(arr.length==1){
+            return arr[0];
+        }
+        for(int i=0;i<arr.length;i++){
+            cs+=arr[i];
+            ms=Math.max(ms,cs);
+            if(cs<0){
+                cs=0;
+            }
+        }
+        return ms;
+    }
+    public static boolean validAna(String s,String t){
+        if(s.length()!=t.length()){
+            return false;
+        }
+        Map<Character,Integer>map=new HashMap<>();
+        for(int i=0;i<s.length();i++){
+            map.put(s.charAt(i),map.getOrDefault(s.charAt(i),0)+1);
+        }
+        for(int i=0;i<t.length();i++){
+            map.put(t.charAt(i),map.getOrDefault(t.charAt(i),0)-1);
+        }
+        for(int a:map.values()){
+            if(a!=0){
+                return false;
+            }
+        }
+        return true;
+    }
+}
+   
