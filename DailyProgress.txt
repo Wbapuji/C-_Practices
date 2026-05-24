@@ -1,0 +1,1938 @@
+-> no of digits in a number //n=4672
+ 1) int digits=(int)(Math.log10(n))+1; //4
+ 2) int digits=String.valueOf(n).length(); //4
+ 3)
+  int count=0;
+ 	while(n>0){
+	  n=n/10;
+	  count++;
+	}
+	return count;
+
+-> reverse a number
+1) int sum=0;
+	while(n!=0){
+	  int digit=n%10;
+	  sum=sum*10+digit;
+	  n=n/10;
+	}
+	return sum;
+
+2)
+class Main {
+    public static void main(String[] args) {
+        int n=4796;
+        System.out.println(helper(n));
+    }
+    
+    public static int helper(int n){
+        int digs=(int)(Math.log10(n))+1;
+        return reverse(n,digs);
+    }
+    public static int reverse(int n,int digs){ //4796
+    if(n%10==n){
+        return n;
+    }
+    int rev=n%10;
+    return rev*(int)((Math.pow(10,digs-1)))+reverse(n/10,digs-1);
+       
+    }
+}
+
+-> sum of digits in a number
+1) 
+   int sum=0;
+	while(n>0){
+	  sum=sum+n%10;
+	  n=n/10;
+	}
+  return sum;
+
+-> product of digits in a number
+  int product=1;
+ 	while(n>0){
+	  product=product*(n%10);
+	  n=n/10;
+	}
+	return product;
+
+
+
+
+import java.util.*;
+import java.io.*;
+class Main {
+    public static void main(String[] args) {
+       Scanner sc=new Scanner(System.in);
+       Map<Integer,Integer>map=new HashMap<>();
+       //here KEY is the value in array and VALUE is index in array
+       int arr[]={1,0,1,2};
+       int target=3;
+       boolean found=false;
+       int p;
+       Set<Integer>set=new HashSet<>();
+       for(int i=0;i<arr.length;i++){
+           p=target-arr[i];
+           if(map.containsKey(p)){
+               System.out.println(map.get(p)+" "+i);
+               found=true;
+             }
+           map.put(arr[i],i);
+       }
+	
+       
+       }
+}
+
+in the above approach we checked at each time whether the p value (after removing current i value from target) is already exists in map or not
+-after the condition checked we will add current i value and it's respective index i.e arr[i]
+1) if found then we got the pair then return the p's value from map (where values are indexes) and current index
+2) if not found 
+	-how we get to know that there is no pair by using Boolean 
+	-if found we flag Boolean as true and at end if Boolean is false the print Not found
+#The use of Boolean to avoid multiple steps
+1-if checking a valid password first flag input as true and check each condition if any fails flag it as false and break
+2-if want to print some data till 10th value and next not need then check the condition if loop reached that specific point then flag it as false
+	and next time not needed to do that same process
+3-to check if there is minimal change or not if change is happened then flag it as true and go further
+
+
+#2 Best time buy and sell a stock
+
+import java.util.*;
+import java.io.*;
+class Main {
+    public static void main(String[] args) {
+       Scanner sc=new Scanner(System.in);
+       int prices[]={7,1,5,3,6,4};
+       int leastPrice,highestPrice;
+       int maxProfit=0;
+       for(int i=0;i<prices.length;i++){
+           leastPrice=prices[i];
+           for(int j=i;j<prices.length;j++){
+               int currentProfit=prices[j]-prices[i];
+               maxProfit=Math.max(currentProfit,maxProfit);
+           }
+       }
+       System.out.println(maxProfit);
+       }
+}
+
+Approach-2 								
+
+import java.util.*;
+import java.io.*;
+class Main {
+    public static void main(String[] args) {
+       Scanner sc=new Scanner(System.in);
+       int prices[]={7,5,4,3,2,1};
+       int lpd=Integer.MAX_VALUE;
+       int hpd=Integer.MIN_VALUE;
+       int mp=0;
+       boolean flag=false;
+       for(int i=0;i<=prices.length-1;i++){
+           if(prices[i]<lpd){
+               lpd=prices[i];
+               hpd=lpd;
+           }
+           if(prices[i]>hpd){
+               hpd=prices[i];
+           }
+           if(lpd<hpd){
+               flag=true;
+               int cp=hpd-lpd;
+               mp=Math.max(mp,cp);
+           }
+       }
+       if(flag){
+           System.out.println(mp);
+       }
+       else{
+           System.out.println("0");
+       }
+    }
+}
+
+Approach-2 Enhanced 
+
+import java.util.*;
+import java.io.*;
+class Main {
+    public static void main(String[] args) {
+       Scanner sc=new Scanner(System.in);
+       int prices[]={7,5,4,3,1};
+       int lpd=Integer.MAX_VALUE;
+       int mp=0;
+       for(int i=0;i<prices.length;i++){
+           if(prices[i]<lpd){
+               lpd=prices[i];
+           }
+           //else{
+               int cp=prices[i]-lpd;
+              mp=Math.max(mp,cp);
+           //}
+       }
+       System.out.println(mp);
+    }
+}
+
+in the Approach-2 beginning my thought was to update lpd and hpd for every element in array and at the end extract the profit but later i got to know that im only comparing values not the positions 
+
+#3 Given an integer array nums, return true if any value appears at least twice in the array, and return false if every element is distinct.
+
+import java.util.*;
+import java.io.*;
+class Main {
+    public static void main(String[] args) {
+       Scanner sc=new Scanner(System.in);
+       int arr[]={1,2,3,4,1};
+       boolean flag=false;
+       for(int i=0;i<arr.length;i++){
+           for(int j=i+1;j<arr.length;j++){
+               if(arr[i]==arr[j]){
+                   flag=true;
+                   break;
+               }
+           }
+       }
+       if(flag){
+           System.out.println("true");
+       }
+       else{
+           System.out.println("false");
+       }
+    }
+}
+
+Approach-2 enhanced
+
+import java.util.*;
+import java.io.*;
+class Main {
+    public static void main(String[] args) {
+       Scanner sc=new Scanner(System.in);
+       int arr[]={1,2,3,4,1};
+       boolean flag=false;
+       HashSet<Integer>set=new HashSet<>();
+       for(int i=0;i<arr.length;i++){
+           if(set.contains(arr[i])){
+               flag=true;
+               break;
+           }
+           
+               set.add(arr[i]);
+       }
+       if(flag){
+           System.out.println("true");
+       }
+       else{
+           System.out.println("false");
+       }
+    }
+}
+
+Initially i kept the set.add() inside the if condition which is never going to add number into set and always gives false
+
+
+
+4. Valid Anagram Given two strings s and t, return true if t is an anagram of s, and false otherwise.
+
+// Online Java Compiler
+// Use this editor to write, compile and run your Java code online
+import java.util.*;
+import java.io.*;
+class Main {
+    public static void main(String[] args) {
+       Scanner sc=new Scanner(System.in);
+       String s="anagram";
+       String t="nagaram";
+       if(s.length()!=t.length()){
+           System.out.println("false");
+           return;
+       }
+       else{
+           char c1[]=s.toCharArray();
+           char c2[]=t.toCharArray();
+           Arrays.sort(c1);
+           Arrays.sort(c2);
+           if(Arrays.equals(c1,c2)){
+               System.out.println("true");
+           }
+       }
+      
+    }
+}
+
+Approach 2:
+
+// Online Java Compiler
+// Use this editor to write, compile and run your Java code online
+import java.util.*;
+import java.io.*;
+class Main {
+    public static void main(String[] args) {
+       Scanner sc=new Scanner(System.in);
+       String s="anagram";
+       String t="nagaram";
+       if(s.length()!=t.length()){
+           System.out.println("false");
+           return;
+       }
+       boolean isAna=true;
+            int alpha[]=new int[26];
+            for(int i=0;i<s.length();i++){
+                // int idx1=s.charAt(i)-'a';
+                // int idx2=t.charAt(i)-'a';
+                // alpha[idx1]++;
+                // alpha[idx2]--;
+                alpha[s.charAt(i)-'a']++;
+                alpha[t.charAt(i)-'a']--;
+            }
+            //boolean isAna=true;
+            for(int a:alpha){
+                if(a!=0){
+                    isAna=false;
+                    break;
+                }
+            }
+            
+            System.out.println(isAna);
+       }
+}
+
+-> if we take alpha array size 256 which will cover all extended ASCII values like upper, lower case characters and numbers, special characters.
+
+my thought was converting both strings into char array then comparing each character and if any misses return false but i was unable to compare and went with fixed size array and increment value in character with respect to it's place in alphabetical order and parellely do decrement in that same array with t  String 
+int idx1=s.charAt(i)-'a';
+                int idx2=t.charAt(i)-'a';
+                alpha[idx1]=alpha[idx1]+1;
+                alpha[idx2]=alpha[idx2]-1;
+adding a +1 into that value of index similary for t decrease -1 to value of that index (initially all values will be 0)
+
+Approach 3:-
+
+import java.io.*;
+import java.util.*;
+class Main {
+    public static void main(String[] args) {
+        String s="goapl@@RajHello";
+        String t="Rajgopal@@olleH";
+        boolean same=allCheck(s,t);
+        System.out.println(same);
+    }
+ public static boolean allCheck(String s,String t){
+        if(s==null || t==null || s.length()!=t.length()){
+            return false;
+        }
+        boolean check=true;
+        Map<Character,Integer>map=new HashMap<>();
+        for(int i=0;i<s.length();i++){
+            char sc=s.charAt(i);
+            char tc=t.charAt(i);
+            map.put(sc,map.getOrDefault(sc,0)+1);
+            map.put(tc,map.getOrDefault(tc,0)-1);
+        }
+        for(int k:map.values()){
+            if(k!=0){
+                check=false;
+                break;
+            }
+        }
+        return check;
+    }
+
+-> this runs for all type of characters and the time complexity is O(N)  and space complexity is O(K) where k is no of unique elements.
+
+5) 350. Intersection of Two Arrays II, Given two integer arrays nums1 and nums2, return an array of their intersection. Each element in the result must appear as many times as it shows in both arrays and you may return the result in any order.
+
+import java.util.*;
+import java.io.*;
+class Main {
+    public static void main(String[] args) {
+       Scanner sc=new Scanner(System.in);
+       int nums1[]={1,2,2,1};
+       int nums2[]={2,2};
+       Map<Integer,Integer>map=new HashMap<>();
+       for(int n:nums1){
+           map.put(n,map.getOrDefault(n,0)+1);
+       }
+       List<Integer>list=new ArrayList<>();
+       for(int i=0;i<nums2.length;i++){
+           if(map.containsKey(nums2[i]) && map.get(nums2[i])>0){
+               list.add(nums2[i]);
+               map.put(nums2[i],map.get(nums2[i])-1);
+           }
+       }
+       System.out.println(list);
+    }
+}
+
+first i did nested for loop and checked each number in both arrays and if matches then i added them into list and in this approach i added duplicate elements too so i used LinkedHashSet so it can store in order but it only stores one unique but requirement is as many times it appears. then i searched and got to know using hashmap storing number and it's frequency first then looping over another array and comparing if that exists already and the value(frequency) is >0 or not if yes add it to list and decrement it's frequency by -1.
+
+Approach-2 (efficient)
+
+import java.util.*;
+import java.io.*;
+class Main {
+    public static void main(String[] args) {
+        int[] arr1={4,9,5};
+        int[] arr2={9,4,9,8,4};
+        int[] res=bSearch(arr1,arr2);
+        System.out.println(Arrays.toString(res));
+    }
+    public static int[] bSearch(int[] arr1,int[] arr2){
+       Map<Integer,Integer>map=new HashMap<>();
+       List<Integer>list=new ArrayList<>();
+       for(int i=0;i<arr1.length;i++){
+           map.put(arr1[i],map.getOrDefault(arr1[i],0)+1);
+       }
+      int k=0;
+      for(int i=0;i<arr2.length;i++){
+          int cnt=map.getOrDefault(arr2[i],0);
+          if(cnt>0){
+              arr1[k++]=arr2[i];
+              map.put(arr2[i],cnt-1);
+          }
+      }
+      return Arrays.copyOfRange(arr1,0,k);
+    }
+}
+
+-> in this approach we override the first array till the condition is met in arr2 and the updation of map is also done. 
+
+6)You are given a large integer represented as an integer array digits, where each digits[i] is the ith digit of the integer. The digits are ordered from most significant to least significant in left-to-right order. The large integer does not contain any leading 0's.
+Increment the large integer by one and return the resulting array of digits.
+
+import java.util.*;
+import java.io.*;
+class Main {
+    public static void main(String[] args) {
+       Scanner sc=new Scanner(System.in);
+       int[] digits={4,3,2,1};
+       for(int i=digits.length-1;i>=0;i--){
+           if(digits[i]<9 && digits[i]!=0){
+               digits[i]=digits[i]+1;
+                break;
+           }
+              else if(digits[i]==9 && digits.length==1){        <-- ! NOT WORKED
+              digits[i]=10;
+              break;
+          }
+           else if(digits[i]==9 && i==digits.length-1){
+               digits[i]=0;
+               digits[i-1]=digits[i-1]+1;
+               break;
+           }
+        
+       }
+       for(int i:digits){
+           System.out.println(i);
+       }
+    }
+}
+
+Approach-2 
+
+import java.util.*;
+import java.io.*;
+class Main {
+    public static void main(String[] args) {
+       Scanner sc=new Scanner(System.in);
+       int[] digits={9};
+       boolean anines=true;
+       for(int i=digits.length-1;i>=0;i--){
+           if(digits[i]<9){
+               digits[i]++;
+               anines=false;
+               break;
+           }
+           else{
+               digits[i]=0;
+           }
+       }
+       int nn[]=new int[digits.length+1];
+       if(anines){
+           nn[0]=1;
+           System.out.println(Arrays.toString(nn));
+       }
+       else{
+           System.out.println(Arrays.toString(digits));
+       }
+    }
+}
+
+
+this was done using one single if condition where it initially checks the last number is 9 or not if not then add +1 and break the loop and print it and if it is 9 then make that position 0 and at the end create a array with +1 size of original array and make first number in that as 1 and rest will be automatically 0 then print it
+
+7. Merge Sorted Array, You are given two integer arrays nums1 and nums2, sorted in non-decreasing order, and two integers m and n, representing the number of elements in nums1 and nums2 respectively.
+import java.util.*;
+import java.io.*;
+class Main {
+    public static void main(String[] args) {
+       Scanner sc=new Scanner(System.in);
+       int nums1[]={0};
+       int m=0;
+       int nums2[]={1};
+       int n=1;
+       for(int i=0;i<nums2.length;i++){
+           nums1[m]=nums2[i];
+           m++;
+       }
+       Arrays.sort(nums1);
+       System.out.println(Arrays.toString(nums1));
+    }
+}
+
+Approach-2
+
+import java.util.*;
+import java.io.*;
+class Main {
+    public static void main(String[] args) {
+       Scanner sc=new Scanner(System.in);
+       int nums1[]={1,2,3,0,0,0};
+       int m=3;
+       int nums2[]={2,5,6};
+       int n=3;
+       int i=m-1;
+       int j=n-1;
+       int k=m+n-1;
+       while(j>=0){
+           if(i>=0 && nums1[i]>nums2[j]){
+               nums1[k]=nums1[i];
+               i--;
+           }
+           else{
+               nums1[k]=nums2[j];
+               j--;
+           }
+           k--;
+       }
+       System.out.println(Arrays.toString(nums1));
+    }
+}
+
+
+in the above approach the comparison starts from last element of both arrays based on m,n where this m,n decides how many numbers will be added into nums1 and compare actual last numbers of nums1 and nums2 and put that into last index of nums1 and move forward and compare again. k stands on nums1's last position and eventually which will be greater they will be added at last, which is indirectly making ascending order.
+
+8) 53. Maximum Subarray, Given an Integer array nums, find the subarray with the largest sum, and return its sum.
+
+my Wrong Approach 
+
+import java.util.*;
+import java.io.*;
+class Main {
+    public static void main(String[] args) {
+        Scanner sc=new Scanner(System.in);
+        int nums[]={5,4,-1,7,8};
+        boolean found=false;
+        int ms=Integer.MIN_VALUE;
+        int cs=0;
+        if(nums.length==1){
+            System.out.println(nums[0]);
+            return;
+        }
+        for(int i=0;i<nums.length;i++){
+            cs=nums[i]+nums[j];
+            ms=Math.max(ms,cs);
+            if(cs<ms){
+                j++;
+            }
+        }
+        System.out.println(ms);
+    }
+}
+
+
+Corrct Approach kadanes algorithm
+
+import java.util.*;
+import java.io.*;
+class Main {
+    public static void main(String[] args) {
+        Scanner sc=new Scanner(System.in);
+        int nums[]={-2,1,-3,4,-5,4};
+        boolean found=false;
+        int ms=Integer.MIN_VALUE;
+        int cs=0;
+        if(nums.length==1){
+            System.out.println(nums[0]);
+            return;
+        }
+        for(int i=0;i<nums.length;i++){
+            cs=cs+nums[i];
+            ms=Math.max(cs,ms);
+            if(cs<0){
+                cs=0;
+            }
+            
+        }
+        System.out.println(ms);
+    }
+}
+ 
+it thought just sum for number and second numbers of array and compare it ms and update ms and move j by +1 and again compare sum of nums[i]+nums[j] to ms and update , but in this approach im only adding two numbers and updating which is wrong
+using kadane algo we can check cs which will get updated by adding nums[i] until cs become 0 but updating ms everytime then again reset cs to 0 and again start adding.
+
+ 
+9)Move Zeroes Given an integer array nums, move all 0's to the end of it while maintaining the relative order of the non-zero elements. Note that you must do this in-place without making a copy of the array.
+
+import java.util.*;
+import java.io.*;
+class Main {
+    public static void main(String[] args) {
+        Scanner sc=new Scanner(System.in);
+        int nums[]={0,1,0,3,12};
+        int zp=0;
+        int inspos=0;
+        for(int i=0;i<nums.length;i++){
+            if(nums[i]!=0){
+                nums[inspos]=nums[i];
+                inspos++;
+            }
+        }
+        for(int i=inspos;i<nums.length;i++){
+            nums[i]=0;
+        }
+        for(int i:nums){
+            System.out.print(i+" ");
+        }
+    }
+}
+
+we only check if nums[i] which is value of that particular index and if that value i.e nums[i]!=0 then we will swap that value with nums[inspos] where inspos=0 and we will gradually increase the inspos and at the we have inspos somewhere in array and from that we need to substitute every value to 0 until nums.length
+
+
+Approach -2:-
+
+public static void moveZeros1(int[] arr){
+        int k=0;
+        for(int i=0;i<arr.length;i++){
+            if(arr[i]!=0){
+            if(i!=k){
+                int temp=arr[i];
+                arr[i]=arr[k];
+                arr[k]=temp;
+            }
+            k++;
+            }
+        }
+    }
+
+
+
+10) (26)Remove Duplicates from Sorted Array Given an integer array nums sorted in non-decreasing order, remove the duplicates in-place such that each unique element appears only once. The relative order of the elements should be kept the same.
+
+import java.util.*;
+import java.io.*;
+class Main {
+    public static void main(String[] args) {
+        Scanner sc=new Scanner(System.in);
+        int nums[]={0,0,1,1,1,2,2,2,3,3,4};
+        int k=0;
+        int j=0;    
+        for(int i=1;i<nums.length;i++){
+            if(nums[i]!=nums[k]){
+                k++;
+                nums[k]=nums[i];
+                
+            }
+        }
+            System.out.print(k+1);
+        
+    }
+}
+
+initially i thought comparing the each element in a nested loop then count k but i also need to sort the array and the rest repeating elements to the corner
+
+
+11. Valid Palindrome A phrase is a palindrome if, after converting all uppercase letters into lowercase letters and removing all non-alphanumeric characters, it reads the same forward and backward. Alphanumeric characters include letters and numbers.
+
+Given a string s, return true if it is a palindrome, or false otherwise.
+
+ 
+
+ import java.util.*;
+import java.io.*;
+class Main {
+    public static void main(String[] args) {
+        Scanner sc=new Scanner(System.in);
+        String s="race a car";
+        s=s.toLowerCase();
+        String str=s.replaceAll("[,>.\\s]","");
+        int left=0;
+        int right=str.length()-1;
+        while(left<right){
+            if(str.charAt(left)==(str.charAt(right))){
+                left++;
+                right--;
+            }
+            else{
+                System.out.println("false");
+                return;
+            }
+        }
+        System.out.println("true");
+    }
+}
+
+
+12. 387 First Unique Character in a String Given a string s, find the first non-repeating character in it and return its index. If it does not exist, return -1.
+
+
+import java.io.*;
+import java.util.*;
+class Main {
+    public static void main(String[] args) {
+        Scanner sc=new Scanner(System.in);
+        String s="loveleetcode";
+        int res=nonrep(s);
+        System.out.println(res);
+    }
+    public static int nonrep(String s){
+       Map<Character,Integer>map=new HashMap<>();
+       for(int i=0;i<s.length();i++){
+          map.put(s.charAt(i),map.getOrDefault(s.charAt(i),0)+1);
+       }
+       int nr;
+       for(int i=0;i<s.length();i++){
+           char c=s.charAt(i);
+           if( map.get(c)==1){
+               return i;
+           }
+       }
+       return -1;
+    }
+}
+
+if the string only contains lower case letters then using s char array of size 26 and doing operations on each alphabetic place would be more efficient
+
+13) 383 Ransom NoteGiven two strings ransomNote and magazine, return true if ransomNote can be constructed by using the letters from magazine and false otherwise.Each letter in magazine can only be used once in ransomNote.
+
+
+import java.io.*;
+import java.util.*;
+class Main {
+    public static void main(String[] args) {
+        Scanner sc=new Scanner(System.in);
+        String ransnote="aa";
+        String magazine="aba";
+        boolean poss=checker(ransnote,magazine);
+        System.out.println(poss);
+    }
+    public static boolean checker(String ran,String mag){
+        int arr[]=new int[26];
+        for(char c1:mag.toCharArray()){
+            arr[c1-'a']++;
+        }
+        for(char c2:ran.toCharArray()){
+            if(arr[c2-'a']==0) return false;
+        }
+        return true;
+    }
+}
+
+
+14) 344 Reverse String Write a function that reverses a string. The input string is given as an array of characters s. You must do this by modifying the input array in-place with O(1) extra memory.
+
+import java.io.*;
+import java.util.*;
+class Main {
+    public static void main(String[] args) {
+        Scanner sc=new Scanner(System.in);
+        char arr[]={'k','a','i','s','e','y'};
+        rev(arr);
+        for(char c:arr){
+            System.out.print(c+" ");
+        }
+    }
+    public static void rev(char [] arr){
+        int start=0;
+        int end=arr.length-1;
+        while(start<end){
+            char temp=arr[start];
+            arr[start]=arr[end];
+            arr[end]=temp;
+            start++;
+            end--;
+        }
+    }
+}
+
+15) 35. Search Insert Position Given a sorted array of distinct integers and a target value, return the index if the target is found. If not, return the index where it would be if it were inserted in order. You must write an algorithm with O(log n) runtime complexity.
+
+import java.util.*;
+import java.io.*;
+class Main {
+    public static void main(String[] args) {
+        Scanner sc=new Scanner(System.in);
+        int arr[]={1,3,5,6};
+        int n=5;
+        int res=ins(arr,n);
+        System.out.println(res);
+    }
+    public static int ins(int[] arr,int n){
+        if(arr[arr.length-1]<n) return arr.length;
+        int left=0;
+        int right=arr.length-1;
+        while(left<right){
+          int  m=left+(right-left)/2;
+            if(arr[m]==n){
+                return m;
+            }
+            else if(arr[m]<n){
+                left=m+1;
+            }
+            else{
+                right=m-1;
+            }
+        }
+        return left;
+        
+    }
+}
+
+16) 7. Reverse Integer Given a signed 32-bit integer x, return x with its digits reversed. If reversing x causes the value to go outside the signed 32-bit integer range [-231, 231 - 1], then return 0
+
+
+import java.util.*;
+import java.io.*;
+class Main {
+    public static void main(String[] args) {
+        Scanner sc=new Scanner(System.in);
+        int n=-123;
+        int res=rev(n);
+        System.out.println(res);
+    }
+    public static int rev(int n){
+        int m=n;
+        long num=0;
+        while(m!=0){
+            int rem=m%10;
+            num=num*10+rem;
+            m=m/10;
+        }
+        if(num>Integer.MAX_VALUE || num<Integer.MIN_VALUE) return 0;
+        return (int)num;
+    }
+}
+
+
+17) 1394. Find Lucky Integer in an Array Given an array of integers arr, a lucky integer is an integer that has a frequency in the array equal to its value.
+   Return the largest lucky integer in the array. If there is no lucky integer return -1.
+
+
+import java.io.*;
+import java.util.*;
+class Main {
+    public static void main(String[] args) {
+        Scanner sc=new Scanner(System.in);
+        int arr[]={1,2,2,3,3,3};
+        int res=lucky(arr);
+        System.out.println(res);
+    }
+    public static int lucky(int []arr){
+        Map<Integer,Integer>map=new HashMap<>();
+        for(int i=0;i<arr.length;i++){
+            map.put(arr[i],map.getOrDefault(arr[i],0)+1);
+        }
+        int large=-1;
+        for(Map.Entry<Integer,Integer> e:map.entrySet()){
+            
+            if(e.getKey()==e.getValue()){
+                
+                large=Math.max(large,e.getKey());
+            }
+        }
+        
+        return large;
+    }
+}
+
+
+Approach -2 (efficient based on constraint)
+
+import java.io.*;
+import java.util.*;
+class Main {
+    public static void main(String[] args) {
+        Scanner sc=new Scanner(System.in);
+        int arr[]={1,2,2,3,3,3};
+        int res=lucky(arr);
+        System.out.println(res);
+    }
+    public static int lucky(int []arr){
+        int[] count=new int[501];
+        for(int a:arr){
+            count[a]++;
+        }
+        for(int i=500;i>=1;i--){
+            if(count[i]==i) return i;
+        }
+        return -1;
+    }
+}
+
+
+18) 20. Valid Parentheses Given a string s containing just the characters '(', ')', '{', '}', '[' and ']', determine if the input string is valid.
+
+import java.io.*;
+import java.util.*;
+class Main {
+    public static void main(String[] args) {
+        Scanner sc=new Scanner(System.in);
+        String s="()[]{}";
+        boolean valid=check(s);
+        System.out.println(valid);
+    }
+    public static boolean check(String s){
+        char c[]=s.toCharArray();
+        Stack<Character>stack=new Stack<>();
+        for(int i=0;i<c.length;i++){
+            if(c[i]=='(' || c[i]=='[' || c[i]=='{'){
+                stack.push(c[i]);
+            }
+            else{
+                if(stack.isEmpty()) return false;
+                char top=stack.pop();
+                if(c[i]==')' && top!='(') return false;
+                if(c[i]==']' && top!='[') return false;
+                if(c[i]=='}' && top!='{') return false;
+            }
+        }
+        return stack.isEmpty();
+    }
+}
+
+
+19) 67. Add Binary Given two binary strings a and b, return their sum as a binary string.
+
+import java.io.*;
+import java.util.*;
+class Main {
+    public static void main(String[] args) {
+        Scanner sc=new Scanner(System.in);
+        String a="101";
+        String b="110";
+        String ab=addb(a,b);
+        System.out.println(ab);
+    }
+    public static String addb(String a, String b){
+        StringBuilder res=new StringBuilder();
+        int i=a.length()-1;
+        int j=b.length()-1;
+        int carry=0;
+        while(i>=0 || j>=0 || carry>0){
+            int sum=+carry;
+            if(i>=0){
+            sum+=a.charAt(i--)-'0';
+            }
+            if(j>=0){
+            sum+=b.charAt(j--)-'0';
+            }
+            res.append(sum%2);
+            carry=sum/2;
+            
+            
+        }
+        return res.reverse().toString();
+    }
+}
+
+-> note that we are adding integer value of charAt(i,j) continuously for 1 iteration then for example total sum for 1st iteration is sum=carry(0)+a.charAt(i)(1)+b.charAt(j)(0), 0+1+0=1 then Stringbuilder takes 1%2=1 to it and carry=1/2=0, then next iteration.
+
+20)1295. Find Numbers with Even Number of Digits Given an array nums of integers, return how many of them contain an even number of digits.
+
+import java.io.*;
+import java.util.*;
+class Main {
+    public static void main(String[] args) {
+        int n=4;
+        int[] arr={12,334,2421,4,6,-664352,0};
+        int res=evenNumCount(arr);
+        System.out.println(res);
+    }
+    public static int evenNumCount(int[] arr){
+        int count=0;
+        int digits;
+        for(int i=0;i<arr.length;i++){
+            int n=arr[i];
+            
+            if(n<0) {
+                n=n*-1;
+            }
+            if(n==0){
+                digits=1;
+            }
+             digits=(int) Math.log10(n)+1; // it wil give number of digits through bits representation
+            if(digits%2==0){ 
+                count++;
+            }
+        }
+        return count;
+    }
+
+21) 38. Count and Say The count-and-say sequence is a sequence of digit strings defined by the recursive formula:
+	countAndSay(1) = "1"
+	countAndSay(n) is the run-length encoding of countAndSay(n - 1).
+
+
+import java.io.*;
+import java.util.*;
+class Main {
+    public static void main(String[] args) {
+        int n=7;
+        String res=csay(n);
+        System.out.println(res);
+    }
+    public static String csay(int n){
+        String res="1";
+       
+        for(int itr=1;itr<n;itr++){
+             StringBuilder sb=new StringBuilder();
+            int i=0;
+            while(i<res.length()){
+                int count=1;
+                char c=res.charAt(i);
+                while(i+1<res.length() && res.charAt(i)==res.charAt(i+1)){
+                    count++;
+                    i++;
+                }
+                sb.append(count).append(c);
+                i++;
+            }
+            res=sb.toString();
+            }
+            return res;
+    }
+}
+
+
+22) 268. Missing Number. Given an array nums containing n distinct numbers in the range [0, n], return the only number in the range that is missing from the array.
+
+import java.util.*;
+import java.io.*;
+class Main {
+    public static void main(String[] args) {
+        Scanner sc=new Scanner(System.in);
+        int[] arr={3,0,1};
+        int res=Missing(arr);
+        System.out.println(res);
+    }
+    public static int Missing(int[] arr){
+        int res=-1;
+        int n=arr.length;
+        int tg=(n*(n+1))/2;
+        for(int i=0;i<arr.length;i++){
+            tg=tg-arr[i];
+        }
+        return tg;
+    }
+}
+
+-> after some value it will get Integer overflow to avoid this use XOR operation
+
+Approach-2:
+
+import java.util.*;
+import java.io.*;
+class Main {
+    public static void main(String[] args) {
+        Scanner sc=new Scanner(System.in);
+        int[] arr={3,0,1};
+        int res=Missing(arr);
+        System.out.println(res);
+    }
+    public static int Missing(int[] arr){
+        int n=arr.length;
+        int res=n;
+        for(int i=0;i<n;i++){
+            res=res^i^arr[i];
+        }
+        return res;
+    }
+}
+
+
+23) 744. Find Smallest Letter Greater Than Target. You are given an array of characters letters that is sorted in non-decreasing order, and a character target. There are at least two different characters in letters.
+
+
+import java.io.*;
+import java.util.*;
+class Main {
+    public static void main(String[] args) {
+        char[] arr={'x','x','y','y'};
+        char target='x';
+        char res=nextGreater(arr,target);
+        System.out.println(res);
+    }
+    public static char nextGreater(char[] arr,char k){
+        int s=0;
+        int e=arr.length-1;
+        while(s<=e){
+            int m=s+(e-s)/2;
+             if(arr[m]<=k){
+                s=m+1;
+            }
+            else{
+                e=m-1;
+            }
+        }
+        return arr[s%arr.length];
+    }
+}
+
+
+-> here s(start index) is being used because s keep on moving forward until it finds target element and the reason we are taking s is because we are looking for ceiling of char so "smallest of great number of target" so upon breaking while loop condition 's' will be ahead of 'e' and gives the ceiling numbered char. if not found then "s%arr.length" will return first index because s reaches arr.length and length%length=0 and even if found suppose at index 2 of length 5 then 2%5=2 then it will return arr[2].
+
+
+24) 14. Longest Common Prefix Write a function to find the longest common prefix string amongst an array of strings. If there is no common prefix, return an empty string "".
+
+
+import java.io.*;
+import java.util.*;
+class Main {
+    public static void main(String[] args) {
+        Scanner sc=new Scanner(System.in);
+        String[] arr={"flow","fly","flower","flood"};
+        String ans=lcp(arr);
+        System.out.println(ans);
+    }
+    public static String lcp(String[] arr){
+        StringBuilder ans=new StringBuilder();
+        Arrays.sort(arr);
+        String s1=arr[0];
+        String s2=arr[arr.length-1];
+        char[] c1=s1.toCharArray();
+        char[] c2=s2.toCharArray();
+        for(int i=0;i<Math.min(c1.length,c2.length);i++){
+            if(c1[i]!=c2[i]){
+                break;
+            }
+            else{
+            ans.append(c1[i]);
+            }
+        }
+        return ans.toString();
+    }
+}
+
+Approach-2 (Efficient)
+
+import java.io.*;
+import java.util.*;
+class Main {
+    public static void main(String[] args) {
+        Scanner sc=new Scanner(System.in);
+        String[] arr={"flow","fly","flower","flood"};
+        String ans=lcp(arr);
+        System.out.println(ans);
+    }
+    public static String lcp(String[] arr){
+        if(arr.length==0 || arr==null) return "";
+        String ans=arr[0];
+        for(int i=1;i<arr.length;i++){
+            while(arr[i].indexOf(ans)!=0){
+                ans=ans.substring(0,ans.length()-1);
+                if(ans.isEmpty()) return "";
+            }
+        }
+        return ans;
+    }
+}
+
+
+25) 34. Find First and Last Position of Element in Sorted Array Given an array of integers nums sorted in non-decreasing order, find the starting and ending position of a given target value.If target is not found in the array, return [-1, -1]. You must write an algorithm with O(log n) runtime complexity.
+
+
+import java.io.*;
+import java.util.*;
+class Main {
+    public static void main(String[] args) {
+        int[] arr={5,7,7,7,7,8,8,10};
+        int k=7;
+        int[] res=flpos(arr,k);
+        System.out.println(Arrays.toString(res));
+    }
+    public static int[] flpos(int[] arr,int k){
+        int[] ans={-1,-1};
+       ans[0]=findpos(arr,k,true);
+       ans[1]=findpos(arr,k,false);
+       return ans;
+    }
+    public static int findpos(int[] arr,int k,boolean fp){
+        int ans=-1;
+        int s=0;
+        int e=arr.length-1;
+        while(s<=e){
+            int m=s+(e-s)/2;
+            if(arr[m]==k){
+                ans=m;
+                if(fp){
+                    e=m-1;
+                }
+                else{
+                    s=m+1;
+                }
+            }
+            else if(arr[m]<k){
+                s=m+1;
+            }
+            else{
+                e=m-1;
+            }
+        }
+        return ans;
+    }
+}
+
+26)35. Search Insert PositionGiven a sorted array of distinct integers and a target value, return the index if the target is found. If not, return the index where it would be if it were inserted in order. You must write an algorithm with O(log n) runtime complexity.
+
+import java.io.*;
+import java.util.*;
+class Main {
+    public static void main(String[] args) {
+        int[] arr={1,3,5,6};
+        int k=5;
+        int res=fpos(arr,k);
+        System.out.println(res);
+    }
+    public static int fpos(int[] arr,int k){
+        if(arr[0]>k) return 0;
+        if(arr[arr.length-1]<k) return arr.length;
+        int s=0;
+        int e=arr.length-1;
+        int id=-1;
+        while(s<=e){
+            int m=s+(e-s)/2;
+            id=m;
+            if(arr[m]==k) {
+                return m;
+            }
+            else if(arr[m]<k){
+                    s=m+1;
+                }
+            else{
+                e=m-1;
+            }    
+        }
+        return (arr[id]<k) ? id+1 : id;
+    }
+}
+
+-> worked for all cases but took 2 sec more and a bit space for id 
+
+Approach-2: 
+
+public static int fpos(int[] arr, int k) {
+    if (k <= arr[0]) return 0;
+    if (k > arr[arr.length - 1]) return arr.length;
+
+    int s = 0;
+    int e = arr.length - 1;
+
+    while (s <= e) {
+        int m = s + (e - s) / 2;
+
+        if (arr[m] == k) {
+            return m; // Found it!
+        } else if (arr[m] < k) {
+            s = m + 1;
+        } else {
+            e = m - 1;
+        }
+    }
+    return s;
+}
+
+-> same as ceil of a number and boundary check at initial is good.
+
+
+
+27) Given a sorted array arr[] of infinite numbers. The task is to search for an element k in the array.
+
+
+import java.io.*;
+import java.util.*;
+class Main {
+    public static void main(String[] args) {
+       int[] arr={1,2,4,5,6,10,13,15,17,19,20,22,25,29,30,34,38,39,44,46,49,60,61,62,64,65,68,69,71,88,91,93,96,101};
+       int k=20;
+       int s=0;
+       int e=1;
+       while(k>arr[e]){
+          int temp=e+1;
+           e=e+(e-s+1)*2;
+           s=temp;
+       }
+      int res=ipos(arr,k,s,e);
+      System.out.println(res);
+    }
+    public static int ipos(int[] arr,int k,int s,int e){
+        if(arr.length==0 || arr==null) return 0;
+        while(s<=e){
+            int m=s+(e-s)/2;
+            if(arr[m]==k) return m;
+            else if(arr[m]<k){
+                s=m+1;
+            }
+            else{
+                e=m-1;
+            }
+            
+        }
+        return -1;
+    }
+}
+
+-> here we are giving a window of start and end where the target element lies in between those indices and the updating of s and e is based on the target element is less than e element so we can apply binary 
+search.
+
+
+28) 852. Peak Index in a Mountain Array. You are given an integer mountain array arr of length n where the values increase to a peak element and then decrease.
+
+import java.util.*;
+import java.io.*;
+class Main {
+    public static void main(String[] args) {
+        int[] arr={1,2,3,4,9,10,12,14,15,17,19,18,11,8,5,0};
+        
+        int res=bSearch(arr);
+        System.out.println(res);
+    }
+    public static int bSearch(int[] arr){
+        int s=0;
+        int e=arr.length-1;
+        while(s<e){
+            int m=s+(e-s)/2;
+            if(arr[m]<arr[m+1]){
+                s=m+1;
+            }
+            else{
+                e=m;
+            }
+        }
+        return s;
+    }
+}
+
+-> to find a target we will do while(s<=e) but here we are looking for peak/turning point so we will keep on moving s and e till they get stand at same point the is peak.
+
+
+29) 1095. Find in Mountain Array
+
+import java.io.*;
+import java.util.*;
+class Main {
+    public static void main(String[] args) {
+        int[] arr=new int[]{1,2,3,4,5,3,1};
+        int target=3;
+        int peak=findPeak(arr);
+        int firstTry=orderAgnosticBS(arr,target,0,peak);
+        if(firstTry!=-1){
+            System.out.println(firstTry);
+        }
+        else{
+        System.out.println(orderAgnosticBS(arr,target,peak+1,arr.length-1));
+        }
+    }
+    public static int findPeak(int[] arr){
+        int s=0;
+        int e=arr.length-1;
+        while(s<e){
+            int m=s+(e-s)/2;
+            if(arr[m]<arr[m+1]){
+                s=m+1;
+            }
+            else{
+                e=m;
+            }
+        }
+        return s;
+    }
+    public static int orderAgnosticBS(int[] arr,int k,int s,int e){
+        boolean isAsc=arr[s]<arr[e];
+        while(s<=e){
+            int m=s+(e-s)/2;
+            if(arr[m]==k) return m;
+            if(isAsc){
+                if(arr[m]<k){
+                    s=m+1;
+                }
+                else{
+                    e=m-1;
+                }
+            }
+            else{
+                if(arr[m]<k){
+                    e=m-1;
+                }
+                else{
+                    s=m+1;
+                }
+            }
+        }
+        return -1;
+    }
+}
+
+-> here first we will search the peak which will divide the array into two half's which are sorted(asc or dsc) and after that we will search for element in first half that is from 0 index to peak and in other case we will search from peak+1 to end. 
+
+30) 33. Search in Rotated Sorted Array. Integer array nums sorted in ascending order (with distinct values).
+
+************unable to pass edge cases**************
+import java.util.*;
+import java.io.*;
+class Main {
+    public static void main(String[] args) {
+        int[] arr={4,5,6,7,0,1,2};
+        int target=0;
+        int pivot=pivotBS(arr);
+        int firstTry=binarySearch(arr,target,0,pivot);
+        if(pivot==-1){
+            System.out.println(binarySearch(arr,target,0,arr.length-1));
+        }
+        if(firstTry!=-1){
+            System.out.println(firstTry);
+        }
+        else{
+            System.out.println(binarySearch(arr,target,pivot+1,arr.length-1));
+        }
+    }
+    public static int pivotBS(int[] arr){
+        int s=0;
+        int e=arr.length-1;
+
+        // If array is not rotated
+        if (arr[s] <= arr[e]) {
+            return e; // Last index is the pivot
+        }
+
+        while(s<e){					**not correct**
+            int m=s+(e-s)/2;
+            if(arr[m]>arr[m+1]){
+                e=m;
+            }
+            else{
+                s=m+1;
+            }
+        }
+        return s;
+    }
+    public static int binarySearch(int[] arr, int k, int s, int e){
+        while(s<=e){
+            int m=s+(e-s)/2;
+            if(arr[m]==k) return m;
+            else if(arr[m]<k) s=m+1;
+            else e=m-1;
+        }
+        return -1;
+    }
+}
+********unable to pass edge cases***********
+
+-> the above approach was able to run on most of the cases 
+
+Approach -2 :-
+
+import java.io.*;
+import java.util.*;
+class Main {
+    public static void main(String[] args) {
+        int[] arr={4,5,6,7,0,1,2};
+        int target=3;
+        int pivot=pivotBS(arr);
+        if(pivot==-1){
+            System.out.println(binarySearch(arr,target,0,arr.length-1));
+        }
+        else{
+            if(arr[pivot]==target){
+                System.out.println(pivot);
+            }
+            else if(target>=arr[0]){
+                System.out.println(binarySearch(arr,target,0,pivot-1));
+            }
+            else{
+                System.out.println(binarySearch(arr,target,pivot+1,arr.length-1));
+            }
+        }
+    }
+    public static int pivotBS(int[] arr){
+        int s=0;
+        int e=arr.length-1;
+
+	// If array is not rotated
+        if (arr[s] <= arr[e]) {
+            return e; // Last index is the pivot
+        }
+
+        while(s<=e){
+            int m=s+(e-s)/2;
+            if(m<e && arr[m]>arr[m+1]){
+                return m;
+            }
+            if( s<m && arr[m]<arr[m-1]){
+                return m-1;
+            }
+            if(arr[s]<=arr[m]){
+                s=m+1;
+            }
+            else{
+                e=m-1;
+            }
+        }
+        return -1;
+    }
+    public static int binarySearch(int[] arr, int k, int s, int e){
+        while(s<=e){
+            int m=s+(e-s)/2;
+            if(arr[m]==k) return m;
+            else if(arr[m]<k) s=m+1;
+            else e=m-1;
+        }
+        return -1;
+    }
+}
+
+-> lets understand pivot, first two conditions on pivotBS are happens only once that because the sorted array thing is being broken there and next condition if(arr[s]<=arr[m]) means its sorted and there is a chance of higher number on the right side that is from m+1 to e and in else condition (arr[m]<arr[e]) the elements are sorted and the larger element could be in left side and we could have got the pivot in the if condition where arr[m]>arr[m+1] or arr[m]<arr[m-1] but if these conditions not caught the pivot then it might be in left side that is m-1 to s.
+
+
+Approach-3:
+
+import java.io.*;
+import java.util.*;
+class Main {
+    public static void main(String[] args) {
+        int[] arr={4,5,6,7,0,1,2};
+        int target=0;
+        System.out.println(binarySearch(arr,target));
+        
+    }
+    public static int binarySearch(int[] arr,int target){
+        int s=0;
+        int e=arr.length-1;
+        while(s<=e){
+            int m=s+(e-s)/2;
+            if(arr[m]==target) return m;
+            if(arr[s]<=arr[m]){
+                if(target>=arr[s] && target<arr[m]) e=m-1;
+                else s=m+1;
+            }
+            else{
+                if( target<=arr[e] && target>arr[m]){
+                    s=m+1;
+                }
+                else{
+                    e=m-1;
+                }
+            }
+        }
+        return -1;
+    }
+}
+
+31) 81. Search in Rotated Sorted Array II. There is an integer array nums sorted in non-decreasing order (not necessarily with distinct values). **(but instead of returning Boolean we need to return index)**.
+
+
+import java.io.*;
+import java.util.*;
+class Main {
+    public static void main(String[] args) {
+        int[] arr={4,5,5,6,7,8,8,0,1,2,2,3};
+        int target=0;
+        int pivot=pivotInDuplicate(arr);
+        if(pivot==-1){
+            System.out.println(binarySearch(arr,target,0,arr.length-1));
+        }
+        else if(arr[pivot]==target){
+            System.out.println(pivot);
+        }
+        else if(target>=arr[0]){
+            System.out.println(binarySearch(arr,target,0,pivot-1));
+        }
+        else{
+            System.out.println(binarySearch(arr,target,pivot+1,arr.length-1));
+        }
+        
+    }
+    public static int pivotInDuplicate(int[] arr){
+        int s=0;
+        int e=arr.length-1;
+        while(s<=e){
+            int m=s+(e-s)/2;
+            if(m<e && arr[m]>arr[m+1]){
+                return m;
+            }
+            if(s<m && arr[m]<arr[m-1]){
+                return m-1;
+            }
+            if(arr[s]==arr[m] && arr[m]==arr[e]){
+                if(arr[s]>arr[s+1]){
+                    return s;
+                }
+                s++;
+               if(arr[e]<arr[e-1]){
+                   return e-1;
+               }
+               e--;
+            }
+            else if(arr[s]<arr[m] || (arr[s]==arr[m] && arr[m]>arr[e])){
+                s=m+1;
+            }
+            else{
+                e=m-1;
+            }
+        }
+        return -1;
+    }
+    public static int binarySearch(int[] arr,int k,int s,int e){
+        
+        while(s<=e){
+            int m=s+(e-s)/2;
+            if(arr[m]==k) return m;
+            if(arr[m]<k){
+                 s=m+1;
+            }
+            else{
+                 e=m-1;
+            }
+        }
+        return -1;
+    }
+}
+
+-> the initial two conditions of arr[m]>arr[m+1] and arr[m]<arr[m-1] stays same because they match only once even in duplicate array and whenever we have s==m==e then we need to shrink by s=s+1 and e=e-1 because they are same but before that check if any s or e is pivot by arr[s]>arr[s+1] or arr[e]<arr[e-1].
+and the "||" condition is if not similar elements found in s and m or m and e then we will look either left or right. and the condition is to check if arr[s] and arr[m] are same then if arr[m] is > arr[e] then we need to search in right side of m that is s=m+1, else do e=m-1;.
+
+
+32) GFG: Rotation Count in a Rotated Sorted array
+
+
+ import java.io.*;
+import java.util.*;
+class Main {
+    public static void main(String[] args) {
+        int[] arr={4,5,6,7,9,0,1,2};
+        System.out.println(rotationCount(arr)+1);
+        
+    }
+    public static int rotationCount(int[] arr){
+        int count=0;
+        int s=0;
+        int e=arr.length-1;
+        while(s<=e){
+            int m=s+(e-s)/2;
+            if(e>m && arr[m]>arr[m+1]){
+                return m;
+            }
+            if(s<m && arr[m]<arr[m-1]){
+                return m-1;
+            }
+            if(arr[s]<=arr[m]){
+                s=m+1;
+            }
+            else{
+                e=m-1;
+            }
+        }
+        return -1;
+    }
+    public static int binarySearch(int[] arr,int k,int s,int e){
+        
+        while(s<=e){
+            int m=s+(e-s)/2;
+            if(arr[m]==k) return m;
+            if(arr[m]<k){
+                 s=m+1;
+            }
+            else{
+                 e=m-1;
+            }
+        }
+        return -1;
+    }
+}
+
+-> pivot is the element where the sorted thing gets break and it implies that there is an rotation and pivot returns index we need to add +1 to it pivot+1.
+
+33)3467. Transform Array by Parity
+
+import java.util.*;
+import java.io.*;
+class Main {
+    public static void main(String[] args) {
+        int[] arr={1,5,1,4,2};
+        int[] ans=narrayfill(arr);
+        System.out.println(Arrays.toString(ans));
+    }
+    public static int[] arrayfill(int[] arr){
+        int ec=0;
+        int oc=0;
+        for(int i=0;i<arr.length;i++){
+            if(arr[i]%2==0) ec++;
+        }
+        Arrays.fill(arr,0,ec,0);
+        Arrays.fill(arr,ec,arr.length,1);
+        return arr;
+    }
+}
+
+->Arrays.fill() will replace until last-1 index not last index T.C=O(N)+O(N)=O(2N)=O(N) and S.C=O(1)
+
+Approach 2-
+
+import java.util.*;
+import java.io.*;
+class Main {
+    public static void main(String[] args) {
+        
+        int[] arr={1,5,1,4,2};
+        int[] res=arrayFill(arr);
+        System.out.println(Arrays.toString(res));
+        
+    }
+ public static int[] arrayFill(int[] arr){
+        int[] res=new int[arr.length];
+        int l=0;
+        int r=arr.length-1;
+        for(int a:arr){
+            if(a%2==0){
+                res[l]=0;
+                l++;
+            }
+            else{
+                res[r]=1;
+                r--;
+            }
+        }
+        return res;
+    }
+}
+
+-> still O(n)
+
+34) search in a matrix which is row wise sorted 
+
+import java.util.*;
+import java.io.*;
+class Main {
+    public static void main(String[] args) {
+        
+        int[][] arr={
+            {10,20,30,40},
+            {25,28,35,45},
+            {37,41,44,48},
+            {39,42,46,50}
+        };
+        int target=29;
+        int[] res=searchMatrix(arr,target);
+        System.out.println(Arrays.toString(res));
+        
+    }
+    public static int[] searchMatrix(int[][] arr, int k){
+        /*
+        10,20,30,40
+        25,28,35,45
+        37,41,44,48
+        39,42,46,50
+        
+        target=44;
+        */
+        int r=0;
+        int c=arr.length-1;
+        while(r<arr.length && c>=0){
+            if(arr[r][c]==k){
+                return new int[]{r,c};
+            }
+            else if(arr[r][c]<k){
+                r++;
+            }
+            else{
+                c--;
+            }
+        }
+        return new int[]{-1,-1};
+    }
+}
+
+
+35) check if given number is even or not 
+
+import java.util.*;
+import java.io.*;
+class Main {
+    public static void main(String[] args) {
+        int n=137;
+        System.out.println(check(n));
+        
+    }
+    public static boolean check(int n){
+        return ((n&1)==0) ? true : false;
+    }
+}
+
+-> even number has least significant bit as 0 and odd number has LSB 1 if we & then we get to even or not.
+
+36) 3. Longest Substring Without Repeating Characters
+
+import java.io.*;
+import java.util.*;
+class Main {
+    public static void main(String[] args) {
+        String s="abcdefghijklmnopqrstuvwxyz";
+        int res=longestSubSWRC(s);
+        System.out.println(res);
+    }
+    public static int longestSubSWRC(String s){
+        if(s.length()==1){
+            return 1;
+        }
+        Set<Character>seen=new HashSet<>();
+        int l=0;
+        int ml=0;
+        for(int r=0;r<s.length();r++){
+            while(seen.contains(s.charAt(r))){
+                seen.remove(s.charAt(l));
+                l++;
+            }
+            seen.add(s.charAt(r));
+            ml=Math.max(ml,r-l+1);
+        }
+        return ml;
+    }
+}
+
+Approach -2 :
+
+-> but this approach takes extra space O(k), k=size of queue and T.C O(N)
+
+ public static int longestSubSWRC(String s){
+       if(s.length()==1){
+           return 1;
+       }
+       int ml=0;
+       Queue<Character>q=new LinkedList<>();
+       Set<Character>seen=new HashSet<>();
+       for(int i=0;i<s.length();i++){
+           char c=s.charAt(i);
+           while(seen.contains(c)){
+               char remove=q.poll();
+               seen.remove(remove);
+           }
+           q.add(c);
+           seen.add(c);
+           ml=Math.max(ml,q.size());
+       }
+       return ml;
+    }
+
+
+37) 70. Climbing Stairs You are climbing a staircase. It takes n steps to reach the top. Each time you can either climb 1 or 2 steps. In how many distinct ways can you climb to the top?
+
+
+import java.io.*;
+import java.util.*;
+class Main {
+    public static void main(String[] args) {
+        int n=2;
+        int res=climbStairs(n);
+        System.out.println(res);
+    }
+    public static int climbStairs(int n){
+       int[] nsteps=new int[n+1];
+       return helper(n,nsteps);
+    }
+    public static int helper(int n,int[] ns){
+        if(n<=1){
+            return 1;
+        }
+        ns[n]=helper(n-1,ns)+helper(n-2,ns);
+        return ns[n];
+    }
+   
+}
+
+-> for n=7, we need to calculate the no of ways to reach 7 from 5 to 7 or from 6 to 7 and similarly to reach 6 we can go from 4 to 6 and 5 to 6 and goes on. so the total no of ways could be sum of both previous ways of reaching n.(understand again like fibanocci).
+
+Approach-2:
+
+public static int bfClimbstairs(int n){
+        if(n<=1){
+            return 1;
+        }
+        int fs=1;
+        int ss=1;
+        for(int i=2;i<=n;i++){
+            int cs=fs+ss;
+            ss=fs;
+            fs=cs;
+        }
+        return fs;
+    }
+
+-> brute force similar to the summing up last two steps and assigning to first steps(understand???).
+
+Approach-3:
+
+public static int climbstairsDP(int n){
+        if(n<=1){
+            return 1;
+        }
+        int[] dp=new int[n+1];
+        dp[1]=1;
+        dp[2]=2;
+        for(int i=3;i<=n;i++){
+            dp[i]=dp[i-1]+dp[i-2];
+        }
+        return dp[n];
+    }
+
+
+38) 198. House Robber
+
+import java.io.*;
+import java.util.*;
+class Main {
+    public static void main(String[] args) {
+       int[] arr={2, 1, 1, 10};
+       int res=houseRob(arr);
+       System.out.println(res);
+    }
+    public static int houseRob(int[] arr){
+        if(arr.length==1){
+            return arr[0];
+        }
+        int[] dp=new int[arr.length];
+        dp[0]=arr[0];
+        dp[1]=Math.max(arr[0],arr[1]);
+        for(int i=2;i<arr.length;i++){
+            dp[i]=Math.max(arr[i]+dp[i-2],dp[i-1]);
+        }
+        return dp[arr.length-1];
+    }
+}
+
+-> for the arr{2,1,1,10} first we rob 2 then leave 1,1 and go for 10 we take an another same size of array and fill it will the max money at each house time and we can leave max of 2 houses because leaving 3 is not good better add any of the that 3 houses so read below Gemini description.
+Rob this house: If you rob house i, you get its cash (arr[i]), but you couldn't have robbed the house right before it. So you add this cash to the max money you had 2 houses ago.
+
+Skip this house: If you skip house i, your total money is simply whatever the max money was up to 1 house ago.
+$$MaxMoney[i] = max(arr[i] + MaxMoney[i-2], MaxMoney[i-1])
+
+Approach-2 : Space Optimized
+
+public static int housRobSO(int[] arr){
+        if(arr.length==1){
+            return 1;
+        }
+        int secondHR=arr[0];
+        int firstHR=Math.max(arr[0],arr[1]);
+        for(int i=2;i<arr.length;i++){
+            int currentHR=Math.max(arr[i]+secondHR,firstHR);
+            secondHR=firstHR;
+            firstHR=currentHR;
+        }
+        return firstHR;
+        
+    }
+
+
