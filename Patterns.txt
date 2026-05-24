@@ -1,0 +1,167 @@
+Patterns
+
+
+import java.util.*;
+import java.io.*;
+class Main {
+    public static void main(String[] args) {
+        int noOfStars=5;
+        printStarsSquare(noOfStars);
+        printStarsRRTriangle(noOfStars);
+        printStarsRRRTriangle(noOfStars);
+        printNumRRTriangle(noOfStars);
+        printStarsRRWRTriangle(noOfStars);
+        printStarsRRWRTriangle1(noOfStars);
+        printLRTriangle(noOfStars);
+         printDiamondWSpaces(noOfStars);
+         printMiddleOne(noOfStars);
+    }
+    public static void printStarsSquare(int n){
+        if(n==0){
+            System.out.println(" ");
+        }
+        for(int i=0;i<n;i++){
+            for(int j=0;j<n;j++){
+                System.out.print("*"+" ");
+            }
+            System.out.println();
+        }
+         System.out.println();
+    }
+    public static void printStarsRRTriangle(int n){
+        if(n==0){
+            System.out.println(" ");
+        }
+        for(int i=0;i<n;i++){
+            for(int j=0;j<i+1;j++){
+                System.out.print("*"+" ");
+            }
+            System.out.println();
+        }
+         System.out.println();
+    }
+    public static void printStarsRRRTriangle(int n){
+        if(n==0){
+            System.out.println(" ");
+        }
+        for(int i=0;i<n;i++){
+            for(int j=0;j<n-i;j++){
+                System.out.print("* ");
+            }
+            System.out.println();
+        }
+         System.out.println();
+    }
+    public static void printNumRRTriangle(int n){
+        if(n==0){
+            System.out.println(0);
+        }
+         for(int i=1;i<=n;i++){
+            for(int j=1;j<=i;j++){
+                System.out.print(j+" ");
+            }
+            System.out.println();
+        }
+         System.out.println();
+    }
+    
+    public static void printStarsRRWRTriangle(int n){
+        if(n==0){
+            System.out.println(" ");
+        }
+         for(int i=0;i<n;i++){
+            for(int j=0;j<i+1;j++){
+                System.out.print("*"+" ");
+            }
+            System.out.println();
+        }
+        for(int i=1;i<n;i++){
+            for(int j=n-1;j>=i;j--){
+                System.out.print("* ");
+                }
+                System.out.println();
+            }
+             System.out.println();
+        }
+        public static void printStarsRRWRTriangle1(int n){
+        if(n<=0){
+            System.out.println(" ");
+        }
+        for(int i=0;i<(2*n);i++){
+            int stars;
+            if(i<=n){
+                stars=i;
+            }
+            else{
+                stars=2*n-i;
+            }
+            for(int j=0;j<stars;j++){
+                System.out.print("* ");
+            }
+            System.out.println();
+        }
+        }
+        public static void printLRTriangle(int n){
+            /*
+                 *
+               * *
+             * * *
+           * * * *  
+         * * * * *  
+        */
+            if(n<=0){
+                System.out.println(" ");
+            }
+            for(int r=0;r<n;r++){
+                for(int s=0;s<n-r;s++){
+                    System.out.print(" ");
+                }
+                for(int c=n;c>=n-r;c--){
+                    System.out.print("*");
+                }
+                System.out.println();
+            }
+            
+        }
+        public static void printDiamondWSpaces(int n){
+            if(n<=0){
+                System.out.println(" ");
+            }
+            for(int i=0;i<(2*n);i++){
+                int stars;
+                if(i<n){
+                    stars=i;
+                }
+                else{
+                    stars=2*n-i;
+                }
+                int spaces=n-stars;
+                for(int s=0;s<spaces;s++){
+                    System.out.print(" ");
+                }
+                for(int j=0;j<stars;j++){
+                    System.out.print("* ");
+                }
+                System.out.println();
+            }
+        }
+        public static void printMiddleOne(int n){
+            if(n<=0){
+                System.out.println(" ");
+            }
+            
+            for(int r=1;r<=n;r++){
+                for(int s=0;s<n-r;s++){
+                    System.out.print("  ");
+                }
+                for(int c=r;c>=1;c--){
+                    System.out.print(c+" ");
+                }
+                
+                for(int c=2;c<=r;c++){
+                    System.out.print(c+" ");
+                }
+                System.out.println();
+            }
+        }
+}
