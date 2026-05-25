@@ -1936,3 +1936,43 @@ public static int housRobSO(int[] arr){
     }
 
 
+39) Infosys Interview Indian Railways Train Berth Allocation problem
+
+import java.util.*;
+import java.io.*;
+class Main {
+    public static void main(String[] args) {
+        /*
+        1-LowerBirth
+        2-MiddleBirth
+        3-UpperBirth
+        4-LowerBirth
+        5-MiddleBirth
+        6-UpperBirth
+        7-SideLower
+        8-SideUpper
+        */
+        int n=20;
+        String res=findBirth(n);
+        System.out.println(res);
+    }
+    public static String findBirth(int n){
+        Map<Integer,String>map=new HashMap<>();
+        map.put(1,"LB");
+        map.put(2,"MB");
+        map.put(3,"UB");
+        map.put(4,"LB");
+        map.put(5,"MB");
+        map.put(6,"UB");
+        map.put(7,"SL");
+        map.put(8,"SU");
+        int rem=n%8;
+        if(rem==0){
+            rem=8;
+        }
+        if(map.containsKey(rem)){
+            return map.get(rem);
+        }
+        return "no birth";
+    }
+}
