@@ -1976,3 +1976,28 @@ class Main {
         return "no birth";
     }
 }
+
+Approach-2:
+
+public static String findBirth(int n){
+        int res=(n%8);
+        switch(res){
+            case 0: 
+                return "SU";
+            case 1:
+            case 4:   
+                return "L";
+            case 2:
+            case 5:
+                return "M";
+            case 3:
+            case 6:
+                return "U";    
+            case 7:
+                return "SL";
+            default:
+                return "No birth";
+        }
+    }
+
+
