@@ -400,7 +400,7 @@ class Main {
 
 -> in this approach we override the first array till the condition is met in arr2 and the updation of map is also done. 
 
-6)You are given a large integer represented as an integer array digits, where each digits[i] is the ith digit of the integer. The digits are ordered from most significant to least significant in left-to-right order. The large integer does not contain any leading 0's.
+6) 66) You are given a large integer represented as an integer array digits, where each digits[i] is the ith digit of the integer. The digits are ordered from most significant to least significant in left-to-right order. The large integer does not contain any leading 0's.
 Increment the large integer by one and return the resulting array of digits.
 
 import java.util.*;
@@ -464,7 +464,7 @@ class Main {
 
 this was done using one single if condition where it initially checks the last number is 9 or not if not then add +1 and break the loop and print it and if it is 9 then make that position 0 and at the end create a array with +1 size of original array and make first number in that as 1 and rest will be automatically 0 then print it
 
-7. Merge Sorted Array, You are given two integer arrays nums1 and nums2, sorted in non-decreasing order, and two integers m and n, representing the number of elements in nums1 and nums2 respectively.
+7. 88) Merge Sorted Array, You are given two integer arrays nums1 and nums2, sorted in non-decreasing order, and two integers m and n, representing the number of elements in nums1 and nums2 respectively.
 import java.util.*;
 import java.io.*;
 class Main {
@@ -575,7 +575,7 @@ it thought just sum for number and second numbers of array and compare it ms and
 using kadane algo we can check cs which will get updated by adding nums[i] until cs become 0 but updating ms everytime then again reset cs to 0 and again start adding.
 
  
-9)Move Zeroes Given an integer array nums, move all 0's to the end of it while maintaining the relative order of the non-zero elements. Note that you must do this in-place without making a copy of the array.
+9) 283) Move Zeroes Given an integer array nums, move all 0's to the end of it while maintaining the relative order of the non-zero elements. Note that you must do this in-place without making a copy of the array.
 
 import java.util.*;
 import java.io.*;
@@ -939,7 +939,46 @@ class Main {
     }
 }
 
+
 -> note that we are adding integer value of charAt(i,j) continuously for 1 iteration then for example total sum for 1st iteration is sum=carry(0)+a.charAt(i)(1)+b.charAt(j)(0), 0+1+0=1 then Stringbuilder takes 1%2=1 to it and carry=1/2=0, then next iteration.
+
+** For understanding **
+import java.util.*;
+import java.io.*;
+class Main {
+    public static void main(String[] args) {
+        Scanner sc=new Scanner(System.in);
+        String a="1010";
+        String b="1011";
+        String res=add(a,b);
+        System.out.println(res);
+    }
+    public static String add(String a,String b){
+        StringBuilder sb=new StringBuilder();
+        //int sum=0;
+        int c=0;
+        int i=a.length()-1;
+        int j=b.length()-1;
+        while(i>=0 || j>=0){
+            int sum=c;
+            if(i>=0){
+                sum+=a.charAt(i)-'0';
+                i--;
+            }
+            if(j>=0){
+                sum+=b.charAt(j)-'0';
+                j--;
+            }
+            sb.append(sum%2);
+            c=sum/2;
+        }
+        if(c>0){
+            sb.append(c);
+        }
+        return sb.reverse().toString();
+    }
+    
+}
 
 20)1295. Find Numbers with Even Number of Digits Given an array nums of integers, return how many of them contain an even number of digits.
 
@@ -1007,6 +1046,39 @@ class Main {
     }
 }
 
+Approach-2:- 
+
+import java.util.*;
+import java.io.*;
+class Main {
+    public static void main(String[] args) {
+        Scanner sc=new Scanner(System.in);
+        int n=5;
+        String s=csay(n);
+        System.out.println(s);
+    }
+    public static String csay(int n){
+        String s="1";
+        for(int step=2;step<=n;step++){
+            StringBuilder sb=new StringBuilder();
+            s=s+"%";
+            int c=1;
+            for(int i=1;i<s.length();i++){
+                if(s.charAt(i)==s.charAt(i-1)){
+                  c++;   
+                }    
+                else{
+                    sb.append(c);
+                    sb.append(s.charAt(i-1));
+                    c=1;
+                }
+            }
+            s=sb.toString();
+        }
+        return s;
+    }
+    
+}
 
 22) 268. Missing Number. Given an array nums containing n distinct numbers in the range [0, n], return the only number in the range that is missing from the array.
 
@@ -1465,7 +1537,7 @@ class Main {
         if (arr[s] <= arr[e]) {
             return e; // Last index is the pivot
         }
-
+	//4,5,6,7,0,1,2
         while(s<=e){
             int m=s+(e-s)/2;
             if(m<e && arr[m]>arr[m+1]){
@@ -1498,7 +1570,7 @@ class Main {
 
 
 Approach-3:
-
+**** didn't pass all test cases****
 import java.io.*;
 import java.util.*;
 class Main {
@@ -1530,6 +1602,7 @@ class Main {
         return -1;
     }
 }
+***** NOT Passed all test cases*****
 
 31) 81. Search in Rotated Sorted Array II. There is an integer array nums sorted in non-decreasing order (not necessarily with distinct values). **(but instead of returning Boolean we need to return index)**.
 
@@ -1935,7 +2008,6 @@ public static int housRobSO(int[] arr){
         
     }
 
-
 39) Infosys Interview Indian Railways Train Berth Allocation problem
 
 import java.util.*;
@@ -1999,5 +2071,426 @@ public static String findBirth(int n){
                 return "No birth";
         }
     }
+
+
+40) 322. Coin Change. You are given an integer array coins representing coins of different denominations and an integer amount representing a total amount of money.
+
+
+import java.util.*;
+import java.io.*;
+class Main {
+    public static void main(String[] args) {
+        int[] coins={1,5,6,9};
+        int amount=11;
+        int minCoins=findMinCoins(coins,amount);
+        System.out.println(minCoins);
+    }
+    public static int findMinCoins(int[] coins,int k){
+        if(k<1){
+            return 0;
+        }
+        int[] dp=new int[k+1];
+        for(int i=1;i<=k;i++){
+            dp[i]=Integer.MAX_VALUE;
+            for(int coin:coins){
+                if(coin<=i && dp[i-coin]<Integer.MAX_VALUE){
+                    dp[i]=Math.min(dp[i],1+dp[i-coin]);
+                }
+            }
+        }
+        if(dp[k]==Integer.MAX_VALUE){
+            return -1;
+        }
+        return dp[k];
+    }
+}
+
+-> to find the minimum no of coins for the given number we need see minimum of coins after removing one particular + 1 because we have already taken that one coin and keep o doing with different coins until that specific dp[i] gets minimum number. at the end the value stored at dp[targetAmount /*k*/] will have the minimum no of coins to make it.   
+
+41) 26. Remove Duplicates from Sorted Array
+
+import java.io.*;
+import java.util.*;
+class Main {
+    public static void main(String[] args) {
+        Scanner sc=new Scanner(System.in);
+        int[] arr=new int[]{0,0,1,1,2};
+        int res=removedup(arr);
+        System.out.println(res);
+    }
+    // only works for the sorted array
+    public static int removedup(int[] arr){
+        int i=0;
+        for(int j=1;j<arr.length;j++){
+            if(arr[i]!=arr[j]){
+                i++;
+                arr[i]=arr[j];
+            }
+        }
+        return i+1;
+    }
+}
+
+42) 167. Two Sum II - Input Array Is Sorted
+
+import java.io.*;
+import java.util.*;
+class Main {
+    public static void main(String[] args) {
+        Scanner sc=new Scanner(System.in);
+       int[] arr=new int[]{2,7,11,15};
+       int k=9;
+       int[] res=twosum2(arr,k);
+       System.out.println(Arrays.toString(res));
+    }
+    // sorted array 
+    public static int[] twosum2(int[] arr,int k){
+     int i=0;
+     int j=arr.length-1;
+     while(i<j){
+         int sum=arr[i]+arr[j];
+         if(sum==k){
+             return new int[]{i+1,j+1};
+         }
+         else if(sum<k){
+             i++;
+         }
+         else{
+             j--;
+         }
+     }
+     return new int[]{-1,-1};
+    }
+}
+
+43) 560. Subarray Sum Equals K
+
+import java.io.*;
+import java.util.*;
+class Main {
+    public static void main(String[] args) {
+        Scanner sc=new Scanner(System.in);
+       int[] arr=new int[]{3,4,7,-2,2,1,4,2};
+       int k=7;
+       int res=subarrequalsk(arr,k);
+       System.out.println(res);
+    } 
+    public static int subarrequalsk(int[] arr,int k){
+     Map<Integer,Integer>map=new HashMap<>();
+     map.put(0,1);
+     int prefixsum=0;
+     int c=0;
+     for(int i=0;i<arr.length;i++){
+         prefixsum+=arr[i];
+         if(map.containsKey(prefixsum-k)){
+             c+=map.get(prefixsum-k);
+         }
+         map.putIfAbsent(prefixsum,map.getOrDefault(prefixsum,0)+1);
+     }
+     return c;
+    }
+}
+
+44) 525. Contiguous Array
+
+import java.io.*;
+import java.util.*;
+class Main {
+    public static void main(String[] args) {
+        Scanner sc=new Scanner(System.in);
+       int[] arr=new int[]{0,1,1,1,1,1,0,0,0};
+       int res=contiguousarr(arr);
+       System.out.println(res);
+    } 
+    public static int contiguousarr(int[] arr){
+     int zc=0;
+     int oc=0;
+     Map<Integer,Integer>map=new HashMap<>();
+     for(int i=0;i<arr.length;i++){
+         if(arr[i]==0){
+             arr[i]=-1;
+         }
+    }
+    //-1,1,1,1,1,1,-1,-1,-1
+    int sum=0;
+    int ml=0;
+    map.put(0,-1);
+    for(int i=0;i<arr.length;i++){
+        sum+=arr[i];
+        if(map.containsKey(sum)){
+            ml=Math.max(ml,i-map.get(sum));
+        }
+        map.put(sum,i);
+    }
+    return ml;
+}
+}
+
+-> Always remember that we are finding the ""Max Length"" array having equal number of 0's and 1's. by doing current index-last stored index in map and having a maxlength storing variable 
+
+
+**) Merge sort 
+
+
+import java.util.*;
+import java.io.*;
+class Main {
+    public static void main(String[] args) {
+        Scanner sc=new Scanner(System.in);
+        int[] arr=new int[]{1,7,6,4,11,2,9,3};
+        mergesort(arr,0,arr.length-1);
+        for(int i=0;i<arr.length;i++){
+            System.out.print(arr[i]+" ");
+        }
+    }
+    public static void mergesort(int[] arr,int l,int h){
+        if(l<h){
+          int m=(l+h)/2;
+          mergesort(arr,l,m);
+          mergesort(arr,m+1,h);
+          merge(arr,l,m,h);
+        }
+    }
+    public static void merge(int[] arr,int l,int m,int h){
+        int[] temp=new int[arr.length];
+        //or int[] temp=new int[h-l+1];
+        int left=l;
+        int right=m+1;
+        int i=0;
+        while(left<=m && right<=h){
+            if(arr[left]<=arr[right]){
+                temp[i]=arr[left];
+                i++;
+                left++;
+            }
+            else{
+                temp[i]=arr[right];
+                i++;
+                right++;
+            }
+        }
+        while(left<=m){
+            temp[i]=arr[left];
+            i++;
+            left++;
+        }
+        while(right<=h){
+            temp[i]=arr[right];
+            i++;
+            right++;
+        }
+        for(int j=l;j<=h;j++){
+            arr[j]=temp[j-l];
+        }
+    }
+}
+
+
+45) 42. Trapping Rain Water
+
+Approach-1:- DP(prefixsum,suffixsum)
+
+import java.io.*;
+import java.util.*; 
+class Main {
+    public static void main(String[] args) {
+        Scanner sc=new Scanner(System.in);
+        int[] arr=new int[]{4,2,0,3,2,5};
+        int res=trap(arr);
+        System.out.println(res);
+    }
+    public static int trap(int[] arr){
+        int n=arr.length;
+        int[] l=new int[n];
+        l[0]=arr[0];
+        int[] r=new int[n];
+        r[n-1]=arr[n-1];
+        int w=0;
+        for(int i=1;i<n;i++){
+            l[i]=Math.max(l[i-1],arr[i]);
+        }
+        for(int i=n-2;i>=0;i--){
+            r[i]=Math.max(r[i+1],arr[i]);
+        }
+        for(int i=0;i<n;i++){
+            w+=Math.min(l[i],r[i])-arr[i];
+        }
+        return w;
+    }
+}
+
+-> T.C O(n), S.P O(n)
+
+Approach-2:- Two-Pointer
+
+import java.io.*;
+import java.util.*; 
+class Main {
+    public static void main(String[] args) {
+        Scanner sc=new Scanner(System.in);
+        int[] arr=new int[]{0,1,0,2,1,0,1,3,2,1,2,1};
+        int res=trap(arr);
+        System.out.println(res);
+    }
+    public static int trap(int[] arr){
+        int n=arr.length;
+        int lm=0;
+        int rm=0;
+        int t=0;
+        int l=0;
+        int r=n-1;
+        while(l<r){
+            if(arr[l]<arr[r]){
+                if(arr[l]<=lm){
+                    t+=lm-arr[l];
+                }
+                else{
+                    lm=arr[l];
+                }
+                l++;
+                
+            }
+            else{
+                if(arr[r]<=rm){
+                    t+=rm-arr[r];
+                }
+                else{
+                    rm=arr[r];
+                }
+                r--;
+            }
+        }
+        return t;
+    }
+}
+
+-> T.C O(n), S.P O(1)
+
+46) 11. Container With Most Water
+
+import java.io.*;
+import java.util.*; 
+class Main {
+    public static void main(String[] args) {
+        Scanner sc=new Scanner(System.in);
+        int[] arr=new int[]{1,1};
+        int res=trap(arr);
+        System.out.println(res);
+    }
+    public static int trap(int[] arr){
+        int n=arr.length;
+        int l=0;
+        int r=arr.length-1;
+        int a=0;
+        int ma=0;
+        while(l<r){
+            a=Math.min(arr[l],arr[r])*(r-l);
+            ma=Math.max(ma,a);
+            if(arr[l]>=arr[r]){
+                r--;
+            }
+            else{
+                l++;
+            }
+        }
+        return ma;
+    }
+}
+
+
+47) 55. Jump Game
+
+import java.io.*;
+import java.util.*; 
+class Main {
+    public static void main(String[] args) {
+        Scanner sc=new Scanner(System.in);
+        int[] arr=new int[]{3,2,1,0,4};
+        
+        System.out.println(jumps(arr));
+    }
+    public static boolean jumps(int[] arr){
+        int fp=arr.length-1;
+        for(int i=fp-1;i>=0;i--){
+            if(i+arr[i]>=fp){
+                fp=i;
+            }
+            
+        }
+        return (fp==0);
+    }
+}
+
+-> can i reach the fp by current position(i)+arr[i] with the condition i+arr[i]>=fp if yes then fp will be set to current index i.e fp=i;
+
+
+48) 45. Jump Game II 
+
+import java.io.*;
+import java.util.*; 
+class Main {
+    public static void main(String[] args) {
+        Scanner sc=new Scanner(System.in);
+        int[] arr=new int[]{2,3,1,1,4};
+        int res=jump2(arr);
+        System.out.println(res);
+    }
+    public static int jump2(int[] arr){
+        if(arr.length==0){
+            return 0;
+        }
+        int steps=0;
+        int lastIndex=0;
+        int cov=0;
+        int dest=arr.length-1;
+        for(int i=0;i<arr.length-1;i++){
+            cov=Math.max(cov,i+arr[i]);
+            if(lastIndex==i){
+                lastIndex=cov;
+                steps++;
+                if(cov>=dest){
+                    return steps;
+                }
+            }
+        }
+        return steps;
+    }
+}
+
+-> Greedy criteria is choose the farthest index from the available choices.
+
+49) 5. Longest Palindromic Substring
+
+import java.io.*;
+import java.util.*; 
+class Main {
+    public static void main(String[] args) {
+        Scanner sc=new Scanner(System.in);
+        String s="cbbd";
+        String res=palindrome(s);
+        System.out.println(res);
+    }
+    public static String palindrome(String s){
+        int reslen=0;
+        String result="";
+        for(int i=0;i<s.length();i++){
+            for(int j=i;j<s.length();j++){
+                int l=i;
+                int r=j;
+                while(i<r && s.charAt(i)==s.charAt(j)){
+                    l++;
+                    r--;
+                }
+                if(l>=r && reslen<(j-i+1)){
+                    result=s.substring(i,j+1);
+                    reslen=(j-i+1);
+                }
+            }
+        }
+        return result; 
+    
+	}
+}
+
 
 
