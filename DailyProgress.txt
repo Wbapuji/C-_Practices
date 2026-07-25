@@ -2493,4 +2493,478 @@ class Main {
 }
 
 
+50) 875. Koko Eating Bananas
+
+-Brute Force Approach:- 
+
+import java.io.*;
+import java.util.*; 
+class Main {
+    public static void main(String[] args) {
+        Scanner sc=new Scanner(System.in);
+        int[] arr=new int[]{3,6,7,11};
+        int h=8;
+        int speed=koko(arr,h);
+        System.out.println(speed);
+    }
+    public static int koko(int[] arr,int h){
+        int mp=0;
+        for(int a:arr){
+            mp=Math.max(a,mp);
+        }
+        for(int i=1;i<=mp;i++){
+            int hr=0;
+            for(int a:arr){
+                hr+=(int) Math.ceil((double)a/i);
+            }
+            if(hr<=h){
+                return i;
+            }
+        }
+        return -1;
+    }
+}
+
+-> Binary search Approach:- 
+
+import java.io.*;
+import java.util.*; 
+class Main {
+    public static void main(String[] args) {
+        Scanner sc=new Scanner(System.in);
+        int[] arr=new int[]{3,6,7,11};
+        int h=8;
+        int speed=koko(arr,h);
+        System.out.println(speed);
+    }
+    public static int koko(int[] arr,int h){
+        int mp=0;
+        for(int a:arr){
+            mp=Math.max(a,mp);
+        }
+        int low=1;
+        int high=mp;
+        while(low<high){
+            int m=low+(high-low)/2;
+            if(caneat(arr,h,m)){
+                high=m;
+            }
+            else{
+                low=m+1;
+            }
+        }
+        return low;
+    }
+    public static boolean caneat(int[] arr,int h,int k){
+        int th=0;
+        for(int i=0;i<arr.length;i++){
+            th+=(int) Math.ceil((double)arr[i]/k);
+        }
+        return (th<=h);
+    }
+}
+
+
+51) 202. Happy Number
+
+import java.io.*;
+import java.util.*; 
+class Main {
+    public static void main(String[] args) {
+        Scanner sc=new Scanner(System.in);
+        int n=2;
+        System.out.println(happyNum(n));
+    }
+    public static boolean happyNum(int n){
+        int slow=sq(n);
+        int fast=sq(sq(n));
+        while(slow!=fast){
+            slow=sq(slow);
+            fast=sq(sq(fast));
+            if(slow==1 || fast==1){
+                return true;
+            }
+        }
+        return slow==1;
+    }
+    public static int sq(int n){
+        if(n==1) return 1;
+        if(n==0) return 0;
+        int digsum=0;
+        while(n>0){
+            int x=n%10;
+            digsum+=(x*x);
+            n=n/10;
+        }
+        return digsum;
+    }
+    
+}
+
+
+
+52) bitwise operators 
+
+a)****check the given number is power of 2 or not****
+
+import java.io.*;
+import java.util.*; 
+class Main {
+    public static void main(String[] args) {
+        Scanner sc=new Scanner(System.in);
+        int n=9;
+        System.out.println(p2(n));
+    }
+    public static boolean p2(int n){
+        if (n<=0){
+            return false;
+        }
+        return (n & (n-1))==0;
+    }
+}
+
+b)**** check given number is even or odd***
+
+import java.io.*;
+import java.util.*; 
+class Main {
+    public static void main(String[] args) {
+        Scanner sc=new Scanner(System.in);
+        int n=8;
+        System.out.println(evenodd(n));
+    }
+    public static boolean evenodd(int n){
+        if (n<=0){
+            return false;
+        }
+        return (n&1)==0;
+    }
+}
+
+-> true=even, false=odd
+
+c)**** divide a num by 2^k*****
+
+import java.io.*;
+import java.util.*; 
+class Main {
+    public static void main(String[] args) {
+        Scanner sc=new Scanner(System.in);
+        int n=8;
+        int k=2;
+        System.out.println(divideby2Pk(n,k));
+    }
+    public static int divideby2Pk(int n,int k){
+        if (n<=0){
+            return 0;
+        }
+        return n>>k;
+    }
+}
+
+d)*****multiply a num by 2^k***
+
+import java.io.*;
+import java.util.*; 
+class Main {
+    public static void main(String[] args) {
+        Scanner sc=new Scanner(System.in);
+        int n=8;
+        int k=2;
+        System.out.println(divideby2Pk(n,k));
+    }
+    public static int divideby2Pk(int n,int k){
+        if (n<=0){
+            return 0;
+        }
+        return n<<k;
+    }
+}
+
+e) *** swap 2 numbers without using temp***
+
+import java.io.*;
+import java.util.*; 
+class Main {
+    public static void main(String[] args) {
+        Scanner sc=new Scanner(System.in);
+        int n=8;
+        int k=1;
+        int[] res=swap(n,k);
+        System.out.println(Arrays.toString(res));
+    }
+    public static int[] swap(int n,int k){
+        n=n^k;
+        k=n^k;
+        n=n^k;
+        return new int[]{n,k};
+    }
+}
+
+53) 1426) Count Elements
+
+-> HashMap approach
+
+import java.io.*;
+import java.util.*;
+class Main {
+    public static void main(String[] args) {
+        Scanner sc=new Scanner(System.in);
+        int[] arr=new int[]{1,2,3};
+        int res=countele(arr);
+        System.out.println(res);
+    }
+    public static int countele(int[] arr){
+        Map<Integer,Integer>map=new HashMap<>();
+        for(int i=0;i<arr.length;i++){
+            map.put(arr[i],map.getOrDefault(arr[i],0)+1);
+        }
+        int res=0;
+        for(int k:map.keySet()){
+            if(map.containsKey(k+1)){
+                res+=map.get(k);
+            }
+        }
+        return res;
+    }
+}
+
+-> HashSet approach 
+
+
+import java.io.*;
+import java.util.*;
+class Main {
+    public static void main(String[] args) {
+        Scanner sc=new Scanner(System.in);
+        int[] arr=new int[]{1,2,3};
+        int res=countele(arr);
+        System.out.println(res);
+    }
+    public static int countele(int[] arr){
+        Set<Integer>set=new HashSet<>();
+        for(int i=0;i<arr.length;i++){
+            set.add(arr[i]);
+        }
+        int res=0;
+        for(int a:arr){
+            if(set.contains(a+1)){
+                res++;
+            }
+        }
+        return res;
+    }
+}
+
+
+54) 169. Majority Element
+
+
+import java.io.*;
+import java.util.*;
+class Main {
+    public static void main(String[] args) {
+        Scanner sc=new Scanner(System.in);
+        int[] arr=new int[]{2,2,1,1,1,2,2};
+        int res=majority(arr);
+        System.out.println(res);
+    }
+    
+    public static int majority(int[] arr){
+        int m=arr[0];
+        int v=1;
+        for(int i=1;i<arr.length;i++){
+            if(v==0){
+                v++;
+                m=arr[i];
+            }
+            else if(m==arr[i]){
+                v++;
+            }
+            else{
+                v--;
+            }
+        }
+        return m;
+    }
+}
+
+-> sorting and picking middle element is also an approach but sorting takes O(nlogn), hashmap is also an approach but it takes space O(n).
+
+
+55) 238. Product of Array Except Self
+
+
+import java.io.*;
+import java.util.*;
+class Main {
+    public static void main(String[] args) {
+        Scanner sc=new Scanner(System.in);
+        int[] arr=new int[]{1,2,3,4};
+        int[] res=multiply(arr);
+        System.out.println(Arrays.toString(res));
+    }
+    
+    public static int[] multiply(int[] nums){
+        int n=nums.length;
+        int[] lm=new int[n];
+        int[] rm=new int[n];
+        int[] res=new int[n];
+        
+        lm[0]=1;
+        for(int i=1;i<n;i++){
+            lm[i]=lm[i-1]*nums[i-1];
+        }
+        rm[n-1]=1;
+        for(int i=n-2;i>=0;i--){
+            rm[i]=rm[i+1]*nums[i+1];
+        }
+        for(int i=0;i<n;i++){
+            res[i]=lm[i]*rm[i];
+        }
+        return res;
+    }
+}
+
+
+56) 2461. Maximum Sum of Distinct Subarrays With Length K
+
+-> using sliding window + hashset approach
+
+import java.io.*;
+import java.util.*;
+class Main {
+    public static void main(String[] args) {
+        Scanner sc=new Scanner(System.in);
+        int[] arr=new int[]{4,4,4};
+        int k=3;
+        long res=maxsumsubkdistinct(arr,k);
+        System.out.println(res);
+    }
+    public static long maxsumsubkdistinct(int[] nums,int k){
+        Set<Integer>set=new HashSet<>();
+        int n=nums.length;
+        int l=0;
+        int sum=0;
+        int msum=0;
+        for(int r=0;r<n;r++){
+            while(set.contains(nums[r])){
+                set.remove(nums[l]);
+                sum-=nums[l];
+                l++;
+            }
+            set.add(nums[r]);
+            sum+=nums[r];
+            if((r-l+1)>k){
+                sum=sum-nums[l];
+                set.remove(l);
+                l++;
+            }
+            if((r-l+1)==k){
+                msum=Math.max(sum,msum);
+            }
+        }
+        return msum;
+    }
+}
+
+
+57) 643. Maximum Average Subarray I
+
+
+import java.io.*;
+import java.util.*;
+class Main {
+    public static void main(String[] args) {
+        Scanner sc=new Scanner(System.in);
+        int[] arr=new int[]{1,12,-5,-6,50,3};
+        int k=4;
+        double res=maxavgsub(arr,k);
+        System.out.print(res);
+    }
+    public static double maxavgsub(int[] nums,int k){
+       double avg=0;
+       int sum=0;
+       double mavg=Double.NEGATIVE_INFINITY;
+       int l=0;
+       for(int r=0;r<nums.length;r++){
+           sum+=nums[r];
+           if((r-l+1)>k){
+               sum=sum-nums[l];
+               l++;
+           }
+           if((r-l+1)==k){
+               avg=(double) (sum)/k;
+               mavg=Math.max(avg,mavg);
+           }
+           
+       }
+       return mavg;
+    }
+}
+
+--> Approach-2:
+
+
+import java.io.*;
+import java.util.*;
+class Main {
+    public static void main(String[] args) {
+        Scanner sc=new Scanner(System.in);
+        int[] arr=new int[]{1,12,-5,-6,50,3};
+        int k=4;
+        double res=maxavgsub(arr,k);
+        System.out.print(res);
+    }
+    public static double maxavgsub(int[] nums,int k){
+       
+       int sum=0;
+       for(int i=0;i<k;i++){
+           sum+=nums[i];
+       }
+       int msum=sum;
+       for(int i=k;i<nums.length;i++){
+           sum+=nums[i]-nums[i-k];
+           msum=Math.max(sum,msum);
+       }
+       return (double) msum/k;
+    }
+}
+
+58) 1946. Largest Number After Mutating Substring
+
+
+import java.io.*;
+import java.util.*;
+class Main {
+    public static void main(String[] args) {
+        Scanner sc=new Scanner(System.in);
+        int[] arr=new int[]{9,4,3,5,7,2,1,9,0,6};
+        String n="021";
+        String res=maximumNumber(n,arr);
+        System.out.print(res);
+    }
+    public static String maximumNumber(String num,int[] nums){
+       char[] arr=num.toCharArray();
+       boolean start=false;
+       for(int i=0;i<arr.length;i++){
+           int n=arr[i]-'0';
+           if(!start){
+           if(n<nums[n]){
+               start=true;
+               arr[i]=(char) (nums[n]+'0');
+            }
+           }
+            else{
+                if(nums[n]>=n){
+                    arr[i]=(char) (nums[n]+'0');
+                }    
+                else{
+                    break;
+                }
+            }
+      }
+      return new String(arr);
+    }
+}
 
