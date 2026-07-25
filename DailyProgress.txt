@@ -1,3 +1,5 @@
+https://github.com/snehasishroy/leetcode-companywise-interview-questions/blob/master/infosys/all.csv
+
 -> no of digits in a number //n=4672
  1) int digits=(int)(Math.log10(n))+1; //4
  2) int digits=String.valueOf(n).length(); //4
