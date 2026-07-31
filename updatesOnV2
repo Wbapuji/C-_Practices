@@ -1,0 +1,482 @@
+Things I'd Improve
+1. Parallel Retrieval
+
+Currently
+
+Dense
+
+↓
+
+BM25
+
+↓
+
+Merge
+
+These can actually happen in parallel.
+
+Future version:
+
+Dense  ───┐
+          │
+BM25  ────┤
+          ▼
+Merge
+
+That alone can save noticeable latency.
+
+2. Adaptive Reranking
+
+At the moment,
+
+you rerank every merged candidate.
+
+Instead:
+
+if merged <= 8:
+
+    rerank all
+
+elif merged <= 25:
+
+    rerank top 15
+
+else:
+
+    rerank top 25
+
+This keeps quality while reducing time.
+
+3. Embedding Cache
+
+If the same question is asked repeatedly,
+
+cache the embedding.
+
+No need to recompute.
+
+4. Conversation Memory
+
+Right now every question is independent.
+
+Later you could support:
+
+User:
+
+What is RAG?
+
+Assistant:
+...
+
+User:
+
+Advantages?
+
+The second question should automatically inherit
+
+RAG
+
+from the previous turn.
+
+5. Metadata-Aware Prompting
+
+Instead of sending
+
+Chunk 1
+
+Chunk 2
+
+Chunk 3
+
+send
+
+Source:
+Page:
+Section:
+Content:
+
+LLMs understand structured context better.
+
+6. Streaming Responses
+
+Instead of waiting 15–20 seconds,
+
+stream tokens as they are generated.
+
+The perceived responsiveness improves significantly.
+
+Instead of one large file: query.py
+
+We'll build something like:
+rag-chatbot/
+│
+├── query.py                # only 40-60 lines
+│
+├── ingest.py
+├── utils.py
+│
+├── config.py
+│
+├── retriever.py
+│
+├── reranker.py
+│
+├── llm.py
+│
+├── classifier.py
+│
+├── formatter.py
+│
+├── prompts.py
+│
+├── memory.py
+│
+├── cache.py
+│
+├── evaluation.py
+│
+├── logger.py
+│
+└── requirements.txt
+
+Phase 1 (Keep Current Features)
+
+✅ Hybrid Retrieval
+
+✅ MPNet embeddings
+
+✅ BM25
+
+✅ CrossEncoder reranker
+
+✅ Ollama
+
+✅ Context confidence
+
+✅ Domain classifier
+
+✅ Query decomposition
+
+Phase 2
+1. Parallel Retrieval
+
+Instead of
+
+Dense
+
+↓
+
+BM25
+
+We'll run both simultaneously.
+
+Expected speed improvement:
+
+20–35%
+
+2. Adaptive Reranker
+
+Instead of reranking every candidate:
+
+5 candidates
+
+↓
+
+rerank all
+40 candidates
+
+↓
+
+rerank top 20
+
+This saves a lot of inference time.
+
+3. Embedding Cache
+
+If the user asks
+
+What is RAG?
+
+again,
+
+we don't recompute embeddings.
+
+4. LLM Response Cache
+
+If the exact same question appears,
+
+return cached answer instantly.
+
+5. Smarter Context Strength
+
+Instead of
+
+Strong
+
+Weak
+
+We'll have
+
+Very Strong
+
+Strong
+
+Medium
+
+Weak
+
+None
+
+Different prompting strategy for each.
+
+6. Metadata-aware Prompt
+
+Instead of
+
+chunk1
+
+chunk2
+
+We'll send
+
+Document
+
+Page
+
+Section
+
+Chunk
+
+Score
+
+LLMs perform noticeably better with structured context.
+
+7. Conversation Memory
+
+User
+
+What is RAG?
+
+Assistant
+
+...
+
+User
+
+Advantages?
+
+System understands
+
+Advantages of RAG
+
+without another retrieval.
+
+8. Streaming Tokens
+
+Instead of waiting
+
+25 seconds
+
+the answer starts appearing immediately.
+
+9. Better Multi-question Handling
+
+Current
+
+Context Window and RAG
+
+Future
+
+What is Context Window?
+
+What is RAG?
+
+How are they related?
+10. Dynamic Prompt Selection
+
+Comparison question →
+
+table
+
+Definition →
+
+paragraph
+
+Advantages →
+
+bullets
+
+Process →
+
+numbered steps
+
+Code →
+
+syntax highlighted explanation
+
+11. Better General Routing
+
+Current
+
+What is health?
+
+↓
+
+LLM
+
+Future
+
+General Knowledge
+
+↓
+
+LLM
+
+↓
+
+No AI hallucinations
+12. Duplicate Chunk Detection
+
+Avoid
+
+Page 3
+
+Page 4
+
+Page 5
+
+same paragraph
+
+appearing three times.
+
+13. Better Logging
+
+Instead of
+
+Dense
+
+BM25
+
+Reranker
+
+We'll show
+
+Embedding
+
+Dense Retrieval
+
+Sparse Retrieval
+
+Merge
+
+MMR
+
+CrossEncoder
+
+LLM
+
+Formatting
+
+Total Time
+
+Very useful during debugging.
+
+14. Evaluation Module
+
+We'll measure
+
+Retrieval Precision
+
+Context Recall
+
+Groundedness
+
+Hallucination Rate
+
+Latency
+
+instead of guessing.
+
+15. Better Source Citations
+
+Instead of
+
+AI.pdf page 7
+
+We'll show
+
+AI.pdf
+
+Page 7
+
+Chunk 2
+
+Similarity 0.91
+16. Config File
+
+No more editing constants inside code.
+
+Everything inside
+
+config.py
+17. Better Exception Handling
+
+Instead of crashing,
+
+recover automatically.
+
+18. Async LLM Calls
+
+Future-ready.
+
+19. API Ready
+
+FastAPI integration becomes almost trivial.
+
+20. Production Logging
+
+Rotating log files.
+
+Final Version
+
+At the end, your project will look like this:
+User
+      │
+      ▼
+Intent Classifier
+      │
+      ▼
+Query Splitter
+      │
+      ▼
+Embedding Cache
+      │
+      ▼
+Parallel Dense + BM25
+      │
+      ▼
+Candidate Merge
+      │
+      ▼
+MMR
+      │
+      ▼
+CrossEncoder
+      │
+      ▼
+Confidence Gate
+      │
+      ▼
+Prompt Builder
+      │
+      ▼
+Ollama
+      │
+      ▼
+Formatter
+      │
+      ▼
+Streaming Response
+      │
+      ▼
+Conversation Memory
