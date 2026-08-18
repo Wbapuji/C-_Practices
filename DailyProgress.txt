@@ -1,5 +1,3 @@
-https://github.com/snehasishroy/leetcode-companywise-interview-questions/blob/master/infosys/all.csv
-
 -> no of digits in a number //n=4672
  1) int digits=(int)(Math.log10(n))+1; //4
  2) int digits=String.valueOf(n).length(); //4
@@ -42,7 +40,6 @@ class Main {
 }
 
 -> sum of digits in a number
-
 1) 
    int sum=0;
 	while(n>0){
@@ -170,10 +167,8 @@ class Main {
            if(prices[i]<lpd){
                lpd=prices[i];
            }
-           //else{
                int cp=prices[i]-lpd;
               mp=Math.max(mp,cp);
-           //}
        }
        System.out.println(mp);
     }
@@ -310,6 +305,11 @@ int idx1=s.charAt(i)-'a';
                 int idx2=t.charAt(i)-'a';
                 alpha[idx1]=alpha[idx1]+1;
                 alpha[idx2]=alpha[idx2]-1;
+*********************or*****************
+	alpha[s.charAt(i)]++;
+	alpha[s.charAt(j)]--;
+---> here the character which is s.charAt() will be automatically converts into its ASCII value, no need to explicitly convert.
+
 adding a +1 into that value of index similary for t decrease -1 to value of that index (initially all values will be 0)
 
 Approach 3:-
@@ -405,34 +405,6 @@ class Main {
 
 6) 66) You are given a large integer represented as an integer array digits, where each digits[i] is the ith digit of the integer. The digits are ordered from most significant to least significant in left-to-right order. The large integer does not contain any leading 0's.
 Increment the large integer by one and return the resulting array of digits.
-
-import java.util.*;
-import java.io.*;
-class Main {
-    public static void main(String[] args) {
-       Scanner sc=new Scanner(System.in);
-       int[] digits={4,3,2,1};
-       for(int i=digits.length-1;i>=0;i--){
-           if(digits[i]<9 && digits[i]!=0){
-               digits[i]=digits[i]+1;
-                break;
-           }
-              else if(digits[i]==9 && digits.length==1){        <-- ! NOT WORKED
-              digits[i]=10;
-              break;
-          }
-           else if(digits[i]==9 && i==digits.length-1){
-               digits[i]=0;
-               digits[i-1]=digits[i-1]+1;
-               break;
-           }
-        
-       }
-       for(int i:digits){
-           System.out.println(i);
-       }
-    }
-}
 
 Approach-2 
 
@@ -632,16 +604,14 @@ class Main {
     public static void main(String[] args) {
         Scanner sc=new Scanner(System.in);
         int nums[]={0,0,1,1,1,2,2,2,3,3,4};
-        int k=0;
-        int j=0;    
+         int dup=1;
         for(int i=1;i<nums.length;i++){
-            if(nums[i]!=nums[k]){
-                k++;
-                nums[k]=nums[i];
-                
+            if(nums[i]!=nums[i-1]){
+                nums[dup]=nums[i];
+                dup++;
             }
         }
-            System.out.print(k+1);
+        return dup;
         
     }
 }
@@ -649,7 +619,7 @@ class Main {
 initially i thought comparing the each element in a nested loop then count k but i also need to sort the array and the rest repeating elements to the corner
 
 
-11. Valid Palindrome A phrase is a palindrome if, after converting all uppercase letters into lowercase letters and removing all non-alphanumeric characters, it reads the same forward and backward. Alphanumeric characters include letters and numbers.
+11. 125) Valid Palindrome A phrase is a palindrome if, after converting all uppercase letters into lowercase letters and removing all non-alphanumeric characters, it reads the same forward and backward. Alphanumeric characters include letters and numbers.
 
 Given a string s, return true if it is a palindrome, or false otherwise.
 
@@ -679,6 +649,37 @@ class Main {
     }
 }
 
+11.1) 680. Valid Palindrome II
+
+class Solution {
+    public boolean validPalindrome(String s) {
+        s=s.toLowerCase();
+        int l=0;
+        int r=s.length()-1;
+        while(l<r){
+            if(s.charAt(l)!=s.charAt(r)){
+                    return ispalindrome(s,l+1,r) || ispalindrome(s,l,r-1);
+            }
+            else{
+                l++;
+                r--;
+            }
+        }
+            return true;
+        }
+    public  boolean ispalindrome(String s,int i,int j){
+        while(i<j){
+            if(s.charAt(i)!=s.charAt(j)){
+                return false;
+            }
+            else{
+                i++;
+                j--;
+            }
+        }
+        return true;
+    }
+}
 
 12. 387 First Unique Character in a String Given a string s, find the first non-repeating character in it and return its index. If it does not exist, return -1.
 
@@ -710,30 +711,83 @@ class Main {
 
 if the string only contains lower case letters then using s char array of size 26 and doing operations on each alphabetic place would be more efficient
 
+approach-2: 
+
+class Solution {
+    public int firstUniqChar(String s) {
+        int[] alpha=new int[26];
+        for(int i=0;i<s.length();i++){
+            alpha[s.charAt(i)-'a']++;
+        }
+        for(int i=0;i<s.length();i++){
+            if(alpha[s.charAt(i)-'a']==1){
+                return i;
+            }
+        }
+        return -1;
+    }
+}
+
+12.1) 2351. First Letter to Appear Twice
+
+class Solution {
+    public char repeatedCharacter(String s) {
+        boolean[] alpha=new boolean[26];
+        for(int i=0;i<s.length();i++){
+            char c=s.charAt(i);
+            int j=c-'a';
+            if(alpha[j]){
+                return c;
+            }
+            alpha[j]=true;
+        }
+        return ' ';
+    }
+}
+
+
 13) 383 Ransom NoteGiven two strings ransomNote and magazine, return true if ransomNote can be constructed by using the letters from magazine and false otherwise.Each letter in magazine can only be used once in ransomNote.
 
-
-import java.io.*;
-import java.util.*;
-class Main {
-    public static void main(String[] args) {
-        Scanner sc=new Scanner(System.in);
-        String ransnote="aa";
-        String magazine="aba";
-        boolean poss=checker(ransnote,magazine);
-        System.out.println(poss);
-    }
-    public static boolean checker(String ran,String mag){
-        int arr[]=new int[26];
-        for(char c1:mag.toCharArray()){
-            arr[c1-'a']++;
+****** optimal*********
+class Solution {
+    public boolean canConstruct(String ransomNote, String magazine) {
+        int[] a=new int[26];
+        for(int i=0;i<magazine.length();i++){
+            a[magazine.charAt(i)-'a']++;
         }
-        for(char c2:ran.toCharArray()){
-            if(arr[c2-'a']==0) return false;
+        for(int i=0;i<ransomNote.length();i++){
+            a[ransomNote.charAt(i)-'a']--;
+            if(a[ransomNote.charAt(i)-'a']<0){
+                return false;
+            }
         }
         return true;
     }
 }
+****** optimal*********
+
+approach-2:hashmap
+
+class Solution {
+    public boolean canConstruct(String ransomNote, String magazine) {
+        Map<Character,Integer>map=new HashMap<>();
+        for(int i=0;i<magazine.length();i++){
+            map.put(magazine.charAt(i),map.getOrDefault(magazine.charAt(i),0)+1);
+        }
+        for(int i=0;i<ransomNote.length();i++){
+            if(map.containsKey(ransomNote.charAt(i)) && map.get(ransomNote.charAt(i))>0){
+                map.put(ransomNote.charAt(i),map.getOrDefault(ransomNote.charAt(i),0)-1);
+            }
+            else{
+                return false;
+            }
+        }
+        return true;
+    }
+
+}
+
+
 
 
 14) 344 Reverse String Write a function that reverses a string. The input string is given as an array of characters s. You must do this by modifying the input array in-place with O(1) extra memory.
@@ -778,7 +832,7 @@ class Main {
         if(arr[arr.length-1]<n) return arr.length;
         int left=0;
         int right=arr.length-1;
-        while(left<right){
+        while(left<=right){
           int  m=left+(right-left)/2;
             if(arr[m]==n){
                 return m;
@@ -807,16 +861,17 @@ class Main {
         int res=rev(n);
         System.out.println(res);
     }
-    public static int rev(int n){
-        int m=n;
-        long num=0;
-        while(m!=0){
-            int rem=m%10;
-            num=num*10+rem;
-            m=m/10;
+
+    public int reverse(int x) {
+        int n=x;
+        long res=0;
+        while(n!=0){
+            int rem=n%10;
+            if(res>Integer.MAX_VALUE/10 || res<Integer.MIN_VALUE/10) return 0;
+            res=res*10+rem;
+            n=n/10;
         }
-        if(num>Integer.MAX_VALUE || num<Integer.MIN_VALUE) return 0;
-        return (int)num;
+        return (int)res;
     }
 }
 
@@ -1454,59 +1509,7 @@ class Main {
 -> here first we will search the peak which will divide the array into two half's which are sorted(asc or dsc) and after that we will search for element in first half that is from 0 index to peak and in other case we will search from peak+1 to end. 
 
 30) 33. Search in Rotated Sorted Array. Integer array nums sorted in ascending order (with distinct values).
-
-************unable to pass edge cases**************
-import java.util.*;
-import java.io.*;
-class Main {
-    public static void main(String[] args) {
-        int[] arr={4,5,6,7,0,1,2};
-        int target=0;
-        int pivot=pivotBS(arr);
-        int firstTry=binarySearch(arr,target,0,pivot);
-        if(pivot==-1){
-            System.out.println(binarySearch(arr,target,0,arr.length-1));
-        }
-        if(firstTry!=-1){
-            System.out.println(firstTry);
-        }
-        else{
-            System.out.println(binarySearch(arr,target,pivot+1,arr.length-1));
-        }
-    }
-    public static int pivotBS(int[] arr){
-        int s=0;
-        int e=arr.length-1;
-
-        // If array is not rotated
-        if (arr[s] <= arr[e]) {
-            return e; // Last index is the pivot
-        }
-
-        while(s<e){					**not correct**
-            int m=s+(e-s)/2;
-            if(arr[m]>arr[m+1]){
-                e=m;
-            }
-            else{
-                s=m+1;
-            }
-        }
-        return s;
-    }
-    public static int binarySearch(int[] arr, int k, int s, int e){
-        while(s<=e){
-            int m=s+(e-s)/2;
-            if(arr[m]==k) return m;
-            else if(arr[m]<k) s=m+1;
-            else e=m-1;
-        }
-        return -1;
-    }
-}
-********unable to pass edge cases***********
-
--> the above approach was able to run on most of the cases 
+****************
 
 Approach -2 :-
 
@@ -2414,7 +2417,7 @@ class Main {
     }
     public static boolean jumps(int[] arr){
         int fp=arr.length-1;
-        for(int i=fp-1;i>=0;i--){
+        for(int i=fp;i>=0;i--){
             if(i+arr[i]>=fp){
                 fp=i;
             }
