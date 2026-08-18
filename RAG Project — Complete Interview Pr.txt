@@ -1,0 +1,295 @@
+RAG Project — Complete Interview Prep Guide
+
+A study guide built around your project: an offline RAG chatbot over PDFs using MPNet embeddings + ChromaDB, BM25 hybrid retrieval, MMR, a cross-encoder reranker, intent routing, a confidence gate, and a local Mistral-7B served by Ollama.
+
+Use it three ways: (1) read the architecture walkthrough until you can recite it, (2) drill the per-component "why this / why not that" sections, (3) rapid-fire the Q&A bank the night before.
+
+0. The two pitches (memorize these openings)
+
+30-second version: "It's a fully offline retrieval-augmented generation chatbot over PDF documents. I ingest PDFs, chunk and embed them with a sentence-transformer, and store them in a local vector database. At query time I run hybrid retrieval — dense semantic search plus BM25 keyword search — then diversify with MMR, rerank with a cross-encoder, and only ground the LLM's answer if a confidence gate says the retrieval is trustworthy. Everything runs locally on an RTX 3050 with a quantized Mistral-7B via Ollama, so no data leaves the machine and there are no API costs."
+
+2-minute version: same, but walk the pipeline stage by stage (see Section 1) and end with: "The design goal was grounded, private answers on consumer hardware, and the interesting engineering is in the retrieval quality — the hybrid + MMR + rerank + confidence-gate chain — not just calling an LLM."
+
+The rule: lead with the problem (grounded, private answers) and the interesting part (retrieval quality), not the tech stack. Anyone can list libraries.
+
+1. End-to-end architecture — the query's journey
+
+This is the single most important thing to be able to narrate. Practice saying it out loud until it's automatic.
+
+Offline (ingestion), done once:
+
+Extract — PyMuPDF pulls text from each PDF page.
+Clean — normalize whitespace, strip control characters.
+Chunk — split into ~500-word windows with 100-word overlap.
+Embed — each chunk → a 768-dim vector via all-mpnet-base-v2 (normalized).
+Store — vectors + text + metadata (source, page, chunk) go into ChromaDB.
+
+Online (per query):
+
+Intent classification — route the query: AI / CODING / GENERAL / CHITCHAT.
+Embed the query — same model, normalized (so it lives in the same space).
+Dense retrieval — ChromaDB returns the top-k semantically nearest chunks (cosine).
+Sparse retrieval — BM25 returns the top-k keyword matches over the same corpus.
+Merge — union both result sets into a candidate pool (scores normalized first).
+MMR — pick a diverse, non-redundant subset from the pool.
+Rerank — a cross-encoder rescoring each (query, chunk) pair; reorder.
+Confidence gate — decide: is the top retrieval good enough to trust?
+Route the answer:
+Confident + on-topic → build a grounded prompt from the top chunks → LLM.
+Not confident → fall back to a general LLM answer, labelled as ungrounded.
+Generate — Mistral-7B via Ollama produces the answer.
+Return — answer + source citations (file, page).
+
+The one-liner that ties it together: "cheap-and-broad retrieval first, then expensive-and-precise reranking on a shortlist, then a trust check before I let the model speak."
+
+2. Component deep dives (what / how / why this / why not that)
+2.1 Document chunking
+
+What: splitting documents into ~500-word pieces with 100-word overlap.
+
+How it works: a sliding window steps through the text; overlap means consecutive chunks share words so an answer straddling a boundary still lands whole in at least one chunk.
+
+Why chunk at all? Embedding a whole document into one vector "averages" many topics into a blurry point that matches nothing well. Chunks give sharp, topically focused vectors. Also, the LLM context window is finite — you can't stuff a whole PDF in.
+
+Why this size? It's the classic trade-off:
+
+Too large → diluted embeddings (many topics per vector, weaker matches) and wasted context tokens.
+Too small → sharp embeddings but you lose surrounding context and split answers.
+~500 words with overlap is a sensible middle for prose PDFs.
+
+Why NOT alternatives?
+
+No overlap → answers that cross a boundary get cut in half. Overlap fixes that.
+Token-based chunking → arguably better (aligns with the model's actual tokenizer), and a fair "what would you improve" answer. I used word-based for simplicity.
+Semantic chunking (split on topic shifts) → higher quality but more complex; a known improvement, not required for a first version.
+
+Likely follow-ups: "What happens if the answer spans two chunks?" (overlap, and retrieving top-k not top-1). "How would you pick chunk size for tables/code?" (smaller, structure-aware chunking).
+
+2.2 Embeddings and the bi-encoder
+
+What: all-mpnet-base-v2 turns text into a 768-dimensional vector where semantic similarity ≈ geometric closeness.
+
+How it works: it's a bi-encoder — the query and each document are encoded independently into fixed vectors, and similarity is a cheap cosine between them. Because documents are encoded once at ingestion, query time is just one encode + a fast vector search.
+
+Why a bi-encoder for retrieval? Speed and precomputation. You can embed millions of chunks ahead of time and search them in milliseconds. That's only possible because query and doc are encoded separately.
+
+Why mpnet specifically?
+
+768-dim, strong general-purpose semantic quality.
+The alternative, all-MiniLM-L6-v2 (384-dim), is ~5x faster and smaller but slightly lower quality. Since my ingestion is a one-time batch and I cared about retrieval quality, mpnet's cost was acceptable.
+
+Why NOT just use the LLM to embed / why a separate model? Dedicated embedding models are trained specifically so that similar meanings land close together (contrastive training); a general LLM's hidden states aren't optimized for that.
+
+Likely follow-ups: "What's a vector embedding?" (dense numeric representation of meaning). "Why 768 dimensions?" (model architecture choice; more dims = more capacity but more storage/compute). "Why normalize the vectors?" → see 2.4.
+
+2.3 Vector store (ChromaDB)
+
+What: an embedded, persistent vector database holding the chunk vectors + text + metadata.
+
+How it works: it indexes vectors with HNSW (Hierarchical Navigable Small World) — a graph-based approximate nearest-neighbor structure that finds close vectors in roughly logarithmic time instead of scanning everything linearly.
+
+Why ChromaDB (why not X)?
+
+vs FAISS: FAISS is a raw ANN library — blazing fast but no built-in metadata, persistence, or document store. Chroma wraps ANN + metadata + persistence in one simple local package, which suits an offline single-machine project.
+vs Pinecone / Weaviate (hosted): those are cloud/server systems — great at scale but they violate my "fully offline, no external calls" requirement.
+So Chroma is the right fit for this project's constraints; at large scale I'd reconsider.
+
+Likely follow-ups: "What is ANN and why approximate?" (exact nearest-neighbor over millions of vectors is too slow; ANN trades a tiny bit of recall for huge speed). "What is HNSW?" (navigable graph you greedily traverse toward the query).
+
+2.4 Similarity metric: cosine vs dot vs Euclidean
+
+What I use: cosine similarity, with normalized (unit-length) embeddings.
+
+How they relate:
+
+Cosine = the angle between vectors; magnitude-invariant (only direction matters).
+Dot product = cosine × the two magnitudes.
+Euclidean = straight-line distance.
+Key fact: if vectors are normalized to unit length, cosine and dot product are equivalent, and Euclidean is monotonically related to them. That's why I normalize — it makes the metric well-defined and lets me treat dot products as cosine.
+
+Why cosine for text? Two passages can be about the same thing but different lengths; magnitude often tracks length, which we don't want to penalize. Cosine cares about direction (meaning), not magnitude (length). This also matters for your own bug history: unnormalized dot products live on an arbitrary scale, which is exactly why the confidence thresholds were meaningless before normalization.
+
+2.5 Dense retrieval
+
+What: embed the query, ask ChromaDB for the top-k nearest chunks.
+
+Why: captures semantic similarity — "car" matches "automobile," paraphrases match, even when no words overlap.
+
+Weakness (and why you need BM25): it can miss exact rare terms — a specific acronym, product code, or name gets blurred into "nearby" concepts. That gap is the whole reason for hybrid search.
+
+2.6 Sparse retrieval (BM25)
+
+What: a classic lexical ranking function — an improved TF-IDF.
+
+How it works: it scores documents by term overlap with the query, with two refinements: term-frequency saturation (the 10th occurrence of a word matters less than the 2nd) and length normalization (long documents don't win just for being long). It's pure bag-of-words keyword matching — no semantics.
+
+Why include it? It nails exactly what dense retrieval misses: exact tokens, rare terms, acronyms, identifiers. If the user types "LoRA," BM25 finds the literal occurrences even if the embedding space smears "LoRA" toward generic "fine-tuning."
+
+Why NOT BM25 alone? It has no notion of meaning — it misses synonyms and paraphrases entirely. "How do I speed up training?" won't match a passage about "reducing computational cost" because no words overlap.
+
+2.7 Hybrid retrieval and merging
+
+What: run dense + sparse, union the results into one candidate pool.
+
+Why: the two methods are complementary — dense = semantics, sparse = exact terms. Together they recall far more of the truly relevant chunks than either alone. This is the standard production pattern.
+
+How I merge: I normalize each source's scores to [0,1] before combining, so BM25's unbounded scores don't swamp the cosine similarities.
+
+Why NOT combine raw scores? They're on totally different scales (cosine is [-1,1]; BM25 is unbounded positive) — adding them directly lets one dominate meaninglessly.
+
+Better alternative (great "what would you improve" answer): Reciprocal Rank Fusion (RRF) merges by rank position instead of raw score, which is more robust because it sidesteps the scale problem entirely. I'd move to RRF in a next version.
+
+2.8 MMR (Maximal Marginal Relevance)
+
+What: a selection step that picks a diverse subset of candidates.
+
+How it works: greedily, it picks the next chunk to maximize λ · (relevance to query) − (1−λ) · (similarity to already-picked chunks). The λ knob trades relevance against diversity.
+
+Why: plain top-k often returns five near-duplicate chunks (the same paragraph repeated across pages). That wastes the context window and starves the LLM of breadth. MMR ensures the chunks I send cover different aspects.
+
+Why NOT just top-k by score? Redundancy — you'd feed the model the same fact five times and miss complementary information.
+
+Likely follow-up: "What does λ control?" (λ→1 pure relevance, λ→0 pure diversity; I use ~0.7 to favor relevance while trimming duplicates).
+
+2.9 Cross-encoder reranking
+
+What: a second, more accurate model that rescoring the shortlist.
+
+How it works: a cross-encoder takes the query and a candidate chunk together as one input and runs them jointly through the transformer, so every query token can attend to every document token. It outputs a single relevance score. This full cross-attention makes it far more accurate than the bi-encoder's separate encodings.
+
+Why not use the cross-encoder for the whole search? Cost. It can't precompute anything — it needs a fresh forward pass for every (query, document) pair. Over a whole corpus that's impossibly slow. So the pattern is: bi-encoder + BM25 retrieve a cheap broad shortlist; cross-encoder precisely reranks just those few. Best of both — broad recall, precise ordering.
+
+This is the single most important concept in the whole project. If you nail one answer, make it "bi-encoder vs cross-encoder and why I use each where I do."
+
+Your honesty hook: the first (AI-generated) version had an import bug that silently disabled the cross-encoder, so it never ran. I caught it while building an eval harness, fixed it, and measured the retrieval-quality improvement. (See Section 6.)
+
+2.10 Confidence gate
+
+What: before grounding, a check on whether the top retrieval is trustworthy.
+
+How it works: three signals on the (normalized) rerank scores — is the top score above an absolute floor, does the top beat the second by a margin, and does the top stand out from the mean (in std-dev units)? Plus keyword/alias overrides so critical domain terms aren't wrongly rejected.
+
+Why: this is the anti-hallucination core. Without it, an off-topic question still retrieves something, and the model confidently answers from irrelevant context. The gate says "the retrieval is weak — don't pretend these chunks are the answer."
+
+Why is this better than plain RAG? Most tutorial RAG blindly stuffs whatever it retrieved into the prompt. Mine makes an explicit decision about retrieval quality before trusting it — a genuine engineering idea, not boilerplate.
+
+Honest caveat to state: the thresholds are sensible defaults, not yet tuned on a labelled eval set. Tuning them is exactly the kind of measurable improvement I'd do next. (Saying this shows maturity, not weakness.)
+
+2.11 Intent classification / routing
+
+What: classify each query (AI / CODING / GENERAL / CHITCHAT) and route it.
+
+How it works: a small classifier over the query embedding, with a nearest- prototype (SBERT) fallback if the trained model is absent. Chit-chat gets a canned reply; coding gets a code-style prompt; AI questions go through full RAG; general questions go to the ungrounded LLM (clearly labelled).
+
+Why: not every query should hit the retrieval pipeline. "Thanks!" shouldn't trigger a vector search. Routing saves work and gives more appropriate responses.
+
+Honest framing to avoid a trap: routing a question to the general LLM does not eliminate hallucination — it removes grounding, so it can hallucinate more. The correct claim is that I label ungrounded answers so the user knows they're not from their documents. Do not claim routing "prevents hallucination."
+
+2.12 Prompt construction
+
+What: assemble the retrieved chunks + instructions into the LLM prompt.
+
+How it works: a system instruction ("use ONLY the provided context; if it's not there, say so"), the concatenated top chunks as context, and a format hint (table for comparisons, bullets for pros/cons, numbered steps for how-tos).
+
+Why "use only the context"? It constrains the model to the retrieved evidence, which is the mechanism by which RAG reduces hallucination. The "say if not found" instruction gives it an honest escape hatch instead of forcing a made-up answer.
+
+Improvement to mention: metadata-aware prompting — labelling each chunk with its source/page/section so the model can cite and reason about provenance. LLMs handle structured context better than a raw blob.
+
+2.13 LLM serving: Ollama, Mistral-7B, quantization
+
+What: a locally hosted, quantized Mistral-7B served through Ollama.
+
+How quantization works: model weights are stored at lower numeric precision (e.g. 4-bit integers instead of 16-bit floats). This shrinks memory roughly 4x and speeds inference, for a modest quality loss. It's the reason a 7B model fits and runs on an RTX 3050's limited VRAM.
+
+Why local (why not GPT-4 / an API)?
+
+Privacy — data never leaves the machine (the whole point for sensitive documents).
+Cost — no per-token API fees.
+No vendor lock-in / offline — works air-gapped.
+Trade-off (be honest): a local 7B is less capable than a frontier API model, and I own the ops. It's a deliberate privacy/cost-vs-capability choice, not a claim that local is universally better.
+
+Why Mistral-7B? Strong quality-per-parameter at the 7B size, which is the sweet spot for consumer hardware. Why not a bigger model? VRAM limits — a 70B won't fit on a 3050 even quantized.
+
+Likely follow-up: "What does Ollama do?" (a local server that manages, loads, and serves models behind a simple API — like a local, self-hosted model endpoint).
+
+3. Cross-cutting concepts they love to quiz
+RAG vs fine-tuning (near-guaranteed question)
+RAG injects knowledge at inference by retrieving documents. Good for factual recall, easily updated (just change the documents), and lets you cite sources. No retraining.
+Fine-tuning adjusts the model's weights. Good for teaching style, format, or behavior; poor and expensive for factual recall; stale the moment facts change.
+They're complementary, not rivals. "I chose RAG because my need was grounded, updatable, citable factual answers over a document set — exactly RAG's strength — and fine-tuning would be costly and go stale."
+What is hallucination, and how does your system fight it?
+
+A model generating fluent but unsupported/false content. My defenses, in layers: retrieval grounds answers in real text; the "use only context / say if not found" instruction constrains the model; the confidence gate refuses to ground on weak retrieval; and ungrounded answers are labelled as such. No system eliminates hallucination — I reduce and contain it.
+
+Why offline / on-device?
+
+Privacy, cost, offline capability, no lock-in. Trade-off: capped by local hardware.
+
+The chunk-size trade-off
+
+Covered in 2.1 — be ready to say it crisply: large = context but blurry embeddings; small = sharp but fragmented; overlap protects boundaries.
+
+How would you evaluate this? (see Section 5 — critical)
+4. "What are the weaknesses / what would you improve?"
+
+Answering this well signals seniority. Have 3–4 ready, framed as deliberate next steps, not failures:
+
+Rigorous evaluation — build a labelled eval set and measure retrieval hit-rate, groundedness, and latency (RAGAS). "Right now I can reason about quality; I want to measure it." (Biggest one.)
+RRF instead of score-normalized merging — more robust hybrid fusion.
+Tune the confidence thresholds on that eval set instead of using defaults.
+Semantic or token-based chunking instead of fixed word windows.
+Streaming responses + conversation memory (query rewriting) for UX.
+Metadata-aware prompting for better grounding and citations.
+
+Trap to avoid: don't list latency via parallel retrieval as a big win — retrieval is milliseconds; the LLM is ~95%+ of latency. The honest latency wins are streaming (perceived) and a faster model/GPU (actual). Being able to say this proves you measured, and it's a great differentiator.
+
+5. Evaluation — the answer that sets you apart
+
+Most candidates can't measure their RAG. If you can, you're ahead of ~90%.
+
+Retrieval metrics:
+
+Hit rate / recall@k — did a correct chunk appear in the top-k?
+Precision@k — how many of the top-k were relevant?
+MRR (mean reciprocal rank) — how high did the first correct chunk rank?
+
+Generation metrics:
+
+Faithfulness / groundedness — is the answer supported by the retrieved context?
+Answer relevance — does it actually address the question?
+
+How to do it concretely: write 20–30 questions with known correct source pages, run the pipeline, and compute the above. Use an "LLM-as-judge" for groundedness. The standard tool is RAGAS. The killer sentence: "I A/B'd reranker-on vs reranker-off on my eval set and hit-rate@4 improved from X to Y." (Run it and get your real numbers before the interview.)
+
+6. Talking about the AI-assisted build (do this right)
+
+You built this with AI help. That's normal in 2026 and not disqualifying — but you must be able to defend every line as if you wrote it, because to the interviewer, you did. Turn it into a strength:
+
+The bug story (use it — it's gold): "The first pass was AI-assisted. While building an evaluation harness I discovered a silent bug: an incorrect import (from cross_encoder import CrossEncoder) meant the cross-encoder reranker never actually ran — every query fell through to a weaker fallback. I fixed the import, confirmed via the eval set that retrieval quality improved, and also caught a BM25 ID-mapping bug that was corrupting the sparse side of my hybrid search."
+
+Why this works: it demonstrates you can debug AI-generated code, build tooling to catch silent failures, and verify fixes with measurement — which is exactly the skill teams want now. It reframes "AI wrote it" into "I own and validated it."
+
+Never claim numbers you don't have, and never present a feature as working if you haven't confirmed it runs.
+
+7. Rapid-fire Q&A bank (short, punchy answers)
+What is RAG? Grounding an LLM's answer in documents retrieved at query time, instead of relying only on its trained-in knowledge.
+Why RAG over fine-tuning? Updatable, citable, factual recall without retraining.
+Bi-encoder vs cross-encoder? Bi-encoder encodes query and doc separately (fast, used to retrieve); cross-encoder encodes them jointly (accurate, used to rerank a shortlist).
+Why hybrid search? Dense catches meaning; BM25 catches exact/rare terms; together they recall more.
+What is BM25? An improved TF-IDF: keyword ranking with term-frequency saturation and length normalization.
+What is MMR? Greedy selection balancing relevance vs diversity to avoid redundant chunks.
+Why rerank? The cheap retriever gets roughly the right set; the cross-encoder orders it precisely.
+Why normalize embeddings? So cosine = dot product and thresholds live on a meaningful, bounded scale.
+Cosine vs Euclidean? Cosine measures direction (meaning), ignoring magnitude (length) — better for text.
+What is ANN / HNSW? Approximate nearest-neighbor search; HNSW is a navigable graph giving sub-linear search with tiny recall loss.
+What is quantization? Lower-precision weights (e.g. 4-bit) → ~4x less memory, faster, small quality loss — how a 7B fits on a 3050.
+How do you fight hallucination? Grounding + "use only context" instruction + confidence gate + labelling ungrounded answers.
+What's your confidence gate? A check on rerank-score strength/margin that decides whether to trust retrieval before grounding.
+Biggest latency cost? The LLM generation — retrieval is milliseconds.
+How would you evaluate it? Labelled eval set → hit-rate@k, groundedness, latency; A/B changes with RAGAS.
+Why ChromaDB over FAISS/Pinecone? Embedded + persistent + metadata in one local package; fits the offline constraint. FAISS lacks the store layer; Pinecone is hosted.
+What would you improve? Real evaluation, RRF merging, tuned thresholds, semantic chunking, streaming + memory.
+8. The mindset that wins the interview
+
+Interviewers aren't testing whether you memorized definitions — they're testing whether you can reason about trade-offs. Every "why did you use X" is really "do you understand what X buys you and what it costs." So for each component, know: what it does, why you chose it, what you gave up, and what you'd do differently at scale or in v2. If you can walk the pipeline end to end and defend each stage as a deliberate trade-off, you'll be in the top tier of candidates for this kind of role — because most people who build a RAG can't explain why any of it is there.
+
+Good luck. Drill Section 1 (the walkthrough) and Section 2.9 (bi-encoder vs cross-encoder) hardest — those two carry the most weight.
